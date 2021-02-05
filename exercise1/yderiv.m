@@ -1,5 +1,5 @@
 function dydz=yderiv(z,y)
-global molmass rhob pb0 Cp enthalpy U dt Tr R;
+global rhob Ta R U dt dp mu epsilon;
 pso2 = y(1);
 po2 = y(2);
 pso3 = y(3);

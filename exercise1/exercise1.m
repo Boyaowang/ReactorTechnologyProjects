@@ -3,21 +3,26 @@ clear all;
 
 global rhob Ta R U dt dp mu epsilon;
 
+rhob = 541.42; %[kg/m^3]
+Ta = 702.6; %[K]
+R = 8.3145; %[J/mole*K]
+U = 56.783; %[J/(m^2*s*K)]
+dt = 2*0.0353; %[m]
+dp = 0.004572;  %[m]
+mu = 3.7204e-5; %[kg/(m*s)]
+epsilon = 0.45;
+
+inital
+
 nt0 = 54.8214; %[mol/(m2 s)]
 supvel_0 = 2.2e-3; %[m/s] initial superfacial velocity
 molmass = 29.48; %[kg/kmole] 
 ptot = 1.0e5; %[Pa] 
-rhob = 541.42; %[kg/m^3]
-Ta = 702.6; %[K]
 pb0 = 0.211e5; %[Pa]
 Cp = 0.992; %[kJ/kg*K] 
 enthalpy = 1285409.0; %[kJ/kmole]
-U = 56.783; %[J/m^2*s*K]
-dt = 2*0.0353; %[m]
-dp = 0.004572;  %[m]
-mu = 
 
-R = 8.3145; %[J/mole*K]
+
 zstart = 0; %[m]
 zend = 3; %[m]
 pA0 = 0.015e5; %[Pa]

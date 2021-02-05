@@ -1,8 +1,3 @@
-
-Kope = Kp(273);
-disp(Kope);
-
-
 function Cp = CpSO2(T)
 Cp = 30.178+ T*42.452*10^(-3) - T*T*18.218*10^(-6);
 end
@@ -19,10 +14,11 @@ function Cp = CpN2(T)
 Cp = 26.159+ T*6.615*10^(-3) - T*T*2.889^(-7);
 end
 
-function Kp = Kp(T)
-%Modified for R
-R = 8.314; %[J/mole*K]
-b = 98325/(R*T);
-Kp = 3.142*10^(-3)*exp(b-11.2);
+function Kp_ = Kp(T)
+global R;
+Kp_ = 3.142*10^(-3)*exp(98325/(R*T)-11.2); %[Pa^(-0.5)]
 end
 
+function kRate = k(T)
+kRate = 9.8692*10^(-3)*exp(-97782/T-110.1*log(T)+848.1); %[mol(SO2)/kg(cat)*Pa]
+end
