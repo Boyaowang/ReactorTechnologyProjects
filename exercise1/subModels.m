@@ -18,7 +18,7 @@ end
 %% Equilibrium constant
 function Kp_ = Kp(T)
 global R;
-Kp_ = 3.142*10^(-3)*exp(98325/(R*T)-11.2); %[Pa^(-0.5)]
+Kp_ = 3.142*10^(-3)*exp(98325/(R*T)-11.24); %[Pa^(-0.5)]
 end
 
 %% Equilibrium constant
@@ -32,8 +32,8 @@ Rey = rhog*us*dp/mu; %Calculating the friction factor;
 end
 
 %% Friction coefficient
-function fri = f(epsilon, Reynolds)
+function fri = f(Reynolds)
+global epsilon;
 fri = ((1-epsilon)/epsilon^3) * (1.75+ 4.2*Reynolds^(5/6)*(1-epsilon)/Reynolds);
 end
-
 
