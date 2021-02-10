@@ -20,9 +20,9 @@ rhog=ptot*Mm_coeff/(R*T);
 f_coeff = f(Rep(rhog,us));
 
 Cpg = rho(pso2,molmass_so2,T) * CpSO2(T) ...
-    + rho(po2,molmass_o2,T) * CpO2(T) ...
-    + rho(pso3,molmass_so3,T) * CpSO3(T) ...
-    + rho(pn2,molmass_N2,T) * CpN2(T);
+     + rho(po2,molmass_o2,T) * CpO2(T) ...
+     + rho(pso3,molmass_so3,T) * CpSO3(T) ...
+     + rho(pn2,molmass_N2,T) * CpN2(T);
 enthalpy = deltaHR(T);
 
 k_coeff = k(T);
@@ -33,7 +33,7 @@ ro2 = r(k_coeff,po2,pso2,pso3,Kp(T),"o2");
 
 dTdz=1.0/(us*rhog*Cpg)*(-enthalpy*rhob*rso2-4.0*U/dt*(T-Ta));
 dptdz=-f_coeff*rhog*us^2/dp; 
-dusdz=-us*Mm_coeff/(rhog*R) * (1/T*dptdz - ptot/(T^2)*dTdz);%-us/ptot*(dptdz-ptot/T*dTdz);
+dusdz=-us/ptot*(dptdz-ptot/T*dTdz);%-us*Mm_coeff/(rhog*R) * (1/T*dptdz - ptot/(T^2)*dTdz);%
 dpso2dz=-pso2/us*dusdz + pso2/T*dTdz - rhob*R*T*rso2/us;
 dpo2dz=-po2/us*dusdz + po2/T*dTdz - rhob*R*T*ro2/us;
 dpso3dz=-pso3/us*dusdz + pso3/T*dTdz - rhob*R*T*rso3/us;
@@ -58,7 +58,7 @@ Cp = 35.634+ T*71.722*10^(-3) - T*T*31.539*10^(-6);
 end
 
 function Cp = CpN2(T)
-Cp = 26.159+ T*6.615*10^(-3) - T*T*2.889^(-7);
+Cp = 26.159+ T*6.615*10^(-3) - T*T*2.889*10^(-7);
 end
 
 %% Equilibrium constant
@@ -75,13 +75,13 @@ end
 %% Reaction rate
 function rrate = r(k,po2,pso2,pso3,Kp,name)
 if(name == "so2")
-        rrate = -k* sqrt(pso2/pso3) * ( po2 - (pso3/(Kp * pso2))^2 );
+        rrate = k* sqrt(abs(pso2/pso3)) * ( po2 - (pso3/(Kp * pso2))^2 );
 end
 if(name == "so3")
-        rrate = k* sqrt(pso2/pso3) * ( po2 - (pso3/(Kp * pso2))^2 );
+        rrate = -k* sqrt(abs(pso2/pso3)) * ( po2 - (pso3/(Kp * pso2))^2 );
 end
 if(name == "o2")
-        rrate = -0.5*k* sqrt(pso2/pso3) * ( po2 - (pso3/(Kp * pso2))^2 );
+        rrate = 0.5*k* sqrt(abs(pso2/pso3)) * ( po2 - (pso3/(Kp * pso2))^2 );
 end
 end
 

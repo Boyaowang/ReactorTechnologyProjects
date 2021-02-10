@@ -44,7 +44,7 @@ pn2Plot = y(:,1) - y(:,4) -y(:,5) -y(:,6);
 
 %plot the result
 
-m = 7;
+m = 6;
 n = 1;
 nr = 1;
 
@@ -71,25 +71,25 @@ subplot(m,n,4);
 plot(z,y(:,4))
 title('SO2 pressure profile')
 xlabel('z [m]') 
-ylabel('PSO2 [pa]')
+ylabel('Ptot [pa]')
 
 subplot(m,n,5);
 plot(z,y(:,5))
 title('O2 pressure profile')
 xlabel('z [m]') 
-ylabel('PO2 [pa]')
+ylabel('Ptot [pa]')
 
 subplot(m,n,6);
 plot(z,y(:,6))
 title('SO3 pressure profile')
 xlabel('z [m]') 
-ylabel('PSO3 [pa]')
+ylabel('Ptot [pa]')
 
 subplot(m,n,7);
-plot(z,pn2Plot)
-title('N2 pressure profile')
+plot(z,p)
+title('SO3 pressure profile')
 xlabel('z [m]') 
-ylabel('PN2 [pa]')
+ylabel('Ptot [pa]')
 
 
 
