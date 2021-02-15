@@ -21,7 +21,7 @@ HR_Tr = -98787.5; %[J/(molSO2)]
 
 % initial conditions
 nt0 = 54.8214; %[mol/(m2 s)]
-T0 = 666.67; %[K]
+T0 = 777.78; %[K]
 p0 = 202650; %[pa]
 
 us_0 = nt0*R*T0/p0; %[m/s] initial superfacial velocity
@@ -45,20 +45,15 @@ pn2Plot = y(:,1) - y(:,4) -y(:,5) -y(:,6);
 
 %plot the result
 
-m = 2;
-n = 3;
+m = 3;
+n = 2;
 nr = 1;
-
 
 subplot(m,n,nr);
 plot(z,y(:,1))
 title('total pressure profile')
 xlabel('z [m]') 
-ylabel('p [Pa]')
-
-% hold on
-% plot(z,pn2Plot)
-% hold off
+ylabel('Ptot [Pa]')
 
 subplot(m,n,2);
 plot(z,y(:,2))
@@ -95,6 +90,21 @@ ylabel('PSO3 [pa]')
 % title('N2 pressure profile')
 % xlabel('z [m]') 
 % ylabel('PN2 [pa]')
+
+figure()
+plot(z,y(:,1))
+hold on
+plot(z,y(:,4))
+hold on
+plot(z,y(:,5))
+hold on
+plot(z,y(:,6))
+hold on
+plot(z,pn2Plot)
+
+legend({'Ptot','PSO2','PO2', 'PSO3','PN2'},'Location','northeast')
+
+
 
 
 
