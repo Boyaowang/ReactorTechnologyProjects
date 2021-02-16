@@ -1,4 +1,5 @@
 clc;
+close all;
 clear all;
 
 global rhob Ta R U dt dp mu epsilon molmass_so2 molmass_so3 ...
