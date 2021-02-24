@@ -224,7 +224,7 @@ wCO0 = 0.5 .*ones(ndisk,1);
 wCO20 = 0.5 .*ones(ndisk,1);
 wH20 = 0.5 .*ones(ndisk,1);
 wH2O0 = 0.5 .*ones(ndisk,1);
-T0 = 500*ones(ndisk,1);
+T0 = ones(ndisk,1);
 uz0 = ones(ndisk,1);
 % ur0 = ones(ndisk,1);
 pt0 = 1000;
@@ -239,12 +239,13 @@ options = odeset('Stats', 'on');
 
 % Plotting the results
 T = y(:,1:ndisk);
+tplot = 3*[1:1:fix(length(z)/3)];
 %C_exp = [1 0.8 0.74 0.65 0.55 0.44 0.39 0.36 0.33 0.31];
 %t_exp = [0 5 10 20 40 80 120 160 200 240];
 figure
-mesh(r,z,T)
-% axis([0 45 0 240 0 1])
-grid on
-xlabel('Radius [{\mu}m]')
-ylabel('Time [min]')
-zlabel('Normalized concentration in the particle [c_i/c_0]');
+%plot(t/60,c/c0,'k',t_exp,C_exp,'ko')
+plot(z/60,T,'k')
+axis([0 240 0 1])
+xlabel('Time [min]');
+ylabel('Normalized bulk concentration [c/c_0]')
+
