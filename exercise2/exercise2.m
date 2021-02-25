@@ -9,7 +9,8 @@ clear all;
 %                                                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
-    RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny
+    RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny ...
+    MM
 
 %Initial data
 %-------------------------------------------------------------------
@@ -54,7 +55,6 @@ FRACin(4) = 0.0029;       % H2
 FRACin(5) = 0.7218;       % H2O
 FRACin(6) = 0.0641;       % N2
 
-
 % Molemass of the components                         [kg/kmole]
 %-------------------------------------------------------------------
 
@@ -65,7 +65,14 @@ MMASS(4) =  2.02;         % Molemass H2
 MMASS(5) = 18.02;         % Molemass H2O
 MMASS(6) = 28.01;         % Molemass N2
 
+% Initial molefraction of the components 
+Ymol = convert(FRACin);
 
+%Mean Molemass:
+
+%-----------------------------------------------------------------------
+
+MM = 1/(sum(FRACin./MMASS));
 % Preexponential factors for the rate constants      [kmole/kgcat h]
 %-------------------------------------------------------------------
 AJ(1) = 4.255E15;         % Factor for rx. 1
@@ -206,7 +213,7 @@ sumny(6) = 18.50;         % Coefficient for N2       [-]
 Rt = 0.102; % tube radius [m]
 r0 = 0; % Lower integration limit in r-direction
 rn = Rt; % Upper integration limit in r-direction
-ndisk = 50; % Number of discretization points
+ndisk = RP; % Number of discretization points
 r = (r0:(rn-r0)/(ndisk-1):rn)';
 
 zstart = 0; %[m]
@@ -219,11 +226,12 @@ zspan=[zstart zend];
 % rpar = [Rp epsilon qm Kd De r0 rn ndisk kf kl v V];
 
 % Initialization
-wCH40 = 0.5 .*ones(ndisk,1);
-wCO0 = 0.5 .*ones(ndisk,1);
-wCO20 = 0.5 .*ones(ndisk,1);
-wH20 = 0.5 .*ones(ndisk,1);
-wH2O0 = 0.5 .*ones(ndisk,1);
+wCH40 = FRACin(1) .*ones(ndisk,1);
+wCO0 = FRACin(2) .*ones(ndisk,1);
+wCO20 = FRACin(3) .*ones(ndisk,1);
+wH20 = FRACin(4) .*ones(ndisk,1);
+wH2O0 = FRACin(5) .*ones(ndisk,1);
+wN2 = FRACin(6) .*ones(ndisk,1);
 T0 = 500*ones(ndisk,1);
 uz0 = ones(ndisk,1);
 % ur0 = ones(ndisk,1);

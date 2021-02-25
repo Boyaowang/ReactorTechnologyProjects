@@ -27,6 +27,13 @@ ptot = vari(7*n+1);
 
 rhog = 1* ones(n,1);
 
+%CHANGE: reating a matrix of the molar fractions
+COMP = [wCH4 wCO wC02 wH2 wH20 wN2];
+Y = convert(COMP);
+%Create the Matrix Rcomp and column vector for the enthalpy Note that these
+%are GIven For the MOLAR VALUES, NOT MASS
+[Rcomp,DELTAHr] = reactions(T,Y,ptot);
+
 dwCH4dr = dss020(r0,Rt,n,wCH4,-1)';
 dwCH4dr2 = dss042(r0,Rt,n,wCH4,dwCH4dr,2,2)';
 
@@ -47,8 +54,12 @@ dTdr2 = dss042(r0,Rt,n,T,dTdr,2,2)';
 
 duzdr =dss020(r0,Rt,n,uz,-1)';
 dpdz = ergun(rhog, uz, Re, r);
+
+%CHANGE: Summed the reaction terms using the function sum
 dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg)).*...
-       (lambdar .*(dTdr2(2:n-1) + 1./r((2:n-1)) .* dTdr((2:n-1)))); %%todo
+       (lambdar .*(dTdr2(2:n-1) + 1./r((2:n-1)) .* dTdr((2:n-1))))...
+       + (-DELTAHr) *0.001;
+   %%todo
 resdTdz1 = dTdr(1);
 resdTdz2 = dTdr(n); %% todo
 
@@ -66,42 +77,44 @@ resduzdz2 =duzdr(n);
 
 dwCH4dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCH4dr(2:n-1) + dwCH4dr2(2:n-1))...
-    - wCH4(2:n-1) .* duzdz);
+    - wCH4(2:n-1) .* duzdz) + RHOcat*0.001*(1-EPS).*Rcomp(:,1);
 resdwCH4dr1 = dwCH4dr(1);
 resdwCH4dr2 = dwCH4dr(n);
 
 dwCOdz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCOdr(2:n-1) + dwCOdr2(2:n-1))...
-    - wCO(2:n-1) .* duzdz);
+    - wCO(2:n-1) .* duzdz)+ RHOcat*0.001*(1-EPS).*Rcomp(:,2);
 resdwCOdr1 = dwCOdr(1);
 resdwCOdr2 = dwCOdr(n);
 
 dwCO2dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCO2dr(2:n-1) + dwCO2dr2(2:n-1))...
-    - wCO2(2:n-1) .* duzdz);
+    - wCO2(2:n-1) .* duzdz) + RHOcat*0.001*(1-EPS).*Rcomp(:,3);
 resdwCO2dr1 = dwCO2dr(1);
 resdwCO2dr2 = dwCO2dr(n);
 
 dwH2dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwH2dr(2:n-1) + dwH2dr2(2:n-1))...
-    - wH2(2:n-1) .* duzdz);
+    - wH2(2:n-1) .* duzdz)+ RHOcat*0.001*(1-EPS).*Rcomp(:,4);
 resdwH2dr1 = dwH2dr(1);
 resdwH2dr2 = dwH2dr(n);
 
 dwH2Odz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwH2Odr(2:n-1) + dwH2Odr2(2:n-1))...
-    - wH2O(2:n-1) .* duzdz);
+    - wH2O(2:n-1) .* duzdz) + RHOcat*0.001*(1-EPS).*Rcomp(:,5);
 resdwH2Odr1 = dwH2Odr(1);
-resdwH2Odr2 = dwCH4dr(n);
+resdwH2Odr2 = dwH2Odr(n);
 
-dwCH4dz = 1./uz(2:n-1) ...
-    .* (Di/EPS*(1./r(2:n-1).*dwCH4dr(2:n-1) + dwCH4dr2(2:n-1))...
-    - wCH4(2:n-1) .* duzdz);
-resdwCH4dz1 = dwCH4dr(1);
-resdwCH4dz2 = dwCH4dr(n);
+%What about N2?
 
 
-dydz = [resdwCH4dz1;dwCH4dz;resdwCH4dz2;resdTdz1;dTdz;resdTdz2;dpdz;...
-    resduzdz1;duzdz;resduzdz2];
+dydz = [resdwCH4dr1;dwCH4dz;resdwCH4dr2;...
+    resdwCOdr1;dwCOdz;resdwCOdr2;...
+    resdwCO2dr1;dwCO2dz;resdwCO2dr2;...
+    resdwH2dr1;dwH2dz;resdwH2dr2;...
+    resdwH2Odr1;dwH2Odz;resdwH2Odr2;...
+    resdTdz1;dTdz;resdTdz2;...
+    resduzdz1;duzdz;resduzdz2;...
+    dpdz];
 
 end
