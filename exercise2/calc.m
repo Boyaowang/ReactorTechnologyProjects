@@ -1,20 +1,13 @@
 function dydz = calc(z,vari,par,r)
 
-global MM RP GASCONST
+global MM RP GASCONST RHOcat RADIUSi EPS
 
-Rt = 0.102; % tube radius [m]
-r0 = 0; % Lower integration limit in r-direction
-rn = Rt; % Upper integration limit in r-direction
-ndisk = 10; % Number of discretization points
-% r = (r0:(rn-r0)/(ndisk-1):rn)';
-n =RP;
-zstart = 0; %[m]
-zend = 6.096; %[m]
-EPS=0.5;
-Di=0.01;
-rhob=2000 ;
-eta=0.5;
-Re = 1000* ones(n,1);
+r0 = par(1); % Lower integration limit in r-direction
+eta=par(2); % Efficency factor
+n =RP; % number of descretization point
+Di=0.001; %todo
+
+Re = 100* ones(n,1); %todo
 
 wCH4 =vari(1:n);
 wCO = vari(n+1:2*n) ;
@@ -27,9 +20,17 @@ uz = vari(6*n+1:7*n);
 ptot = vari(7*n+1);
 
 Ymass =[wCH4 wCO wCO2 wH2 wH2O wN2];
-Ymol = convert(Ymass);
+Ymol = zeros(RP, 6);
+for i=1:RP
+    Ymol(i,:) =  convert(Ymass(i,:));
+end
+% Ymol = convert(Ymass);
 %Gas heat capacity:
-CPgas = cp(Ymass,T)';
+Cpg = cp(Ymol,T)'; %todo
+
+%Create the Matrix Rcomp and column vector for the enthalpy Note that these
+%are GIven For the MOLAR VALUES, NOT MASS
+[Rcomp,DELTAHr] = reaction(T,Ymol,ptot*ones(n,1));
 
 %Gas conductivity
 lambdar = LAMBDAG(Ymass,T)';
@@ -38,28 +39,30 @@ lambdar = LAMBDAG(Ymass,T)';
 
 rhog = (ptot*MM)./(GASCONST*T);
 
-dwCH4dr = dss020(r0,Rt,n,wCH4,-1)';
-dwCH4dr2 = dss042(r0,Rt,n,wCH4,dwCH4dr,2,2)';
+dwCH4dr = dss020(r0,RADIUSi,n,wCH4,-1)';
+dwCH4dr2 = dss042(r0,RADIUSi,n,wCH4,dwCH4dr,2,2)';
 
-dwCOdr = dss020(r0,Rt,n,wCO,-1)';
-dwCOdr2 = dss042(r0,Rt,n,wCO,dwCOdr,2,2)';
+dwCOdr = dss020(r0,RADIUSi,n,wCO,-1)';
+dwCOdr2 = dss042(r0,RADIUSi,n,wCO,dwCOdr,2,2)';
 
-dwCO2dr = dss020(r0,Rt,n,wCO2,-1)';
-dwCO2dr2 = dss042(r0,Rt,n,wCO2,dwCO2dr,2,2)';
+dwCO2dr = dss020(r0,RADIUSi,n,wCO2,-1)';
+dwCO2dr2 = dss042(r0,RADIUSi,n,wCO2,dwCO2dr,2,2)';
 
-dwH2dr = dss020(r0,Rt,n,wH2,-1)';
-dwH2dr2 = dss042(r0,Rt,n,wH2,dwH2dr,2,2)';
+dwH2dr = dss020(r0,RADIUSi,n,wH2,-1)';
+dwH2dr2 = dss042(r0,RADIUSi,n,wH2,dwH2dr,2,2)';
 
-dwH2Odr = dss020(r0,Rt,n,wH2O,-1)';
-dwH2Odr2 = dss042(r0,Rt,n,wH2O,dwH2Odr,2,2)';
+dwH2Odr = dss020(r0,RADIUSi,n,wH2O,-1)';
+dwH2Odr2 = dss042(r0,RADIUSi,n,wH2O,dwH2Odr,2,2)';
 
-dTdr = dss020(r0,Rt,n,T,-1)';
-dTdr2 = dss042(r0,Rt,n,T,dTdr,2,2)';
+dTdr = dss020(r0,RADIUSi,n,T,-1)';
+dTdr2 = dss042(r0,RADIUSi,n,T,dTdr,2,2)';
 
-duzdr =dss020(r0,Rt,n,uz,-1)';
+duzdr =dss020(r0,RADIUSi,n,uz,-1)';
 dpdz = ergun(rhog, uz, Re, r);
-dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* CPgas(2:n-1))).*...
-       (lambdar(2:n-1) .*(dTdr2(2:n-1) + 1./r((2:n-1)) .* dTdr((2:n-1)))); %%todo
+   
+dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1))).*...
+       (lambdar(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
+       -DELTAHr(2:n-1).*eta);
 resdTdz1 = dTdr(1);
 resdTdz2 = dTdr(n); %% todo
 
@@ -77,31 +80,36 @@ resduzdz2 =duzdr(n);
 
 dwCH4dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCH4dr(2:n-1) + dwCH4dr2(2:n-1))...
-    - wCH4(2:n-1) .* duzdz);
+    - wCH4(2:n-1) .* duzdz ...
+    + RHOcat*eta*(1-EPS).*Rcomp(2:n-1,1)./(EPS*rhog(2:n-1)));
 resdwCH4dr1 = dwCH4dr(1);
 resdwCH4dr2 = dwCH4dr(n);
 
 dwCOdz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCOdr(2:n-1) + dwCOdr2(2:n-1))...
-    - wCO(2:n-1) .* duzdz);
+    - wCO(2:n-1) .* duzdz ...
+    + RHOcat*eta*(1-EPS).*Rcomp(2:n-1,2)./(EPS*rhog(2:n-1)));
 resdwCOdr1 = dwCOdr(1);
 resdwCOdr2 = dwCOdr(n);
 
 dwCO2dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCO2dr(2:n-1) + dwCO2dr2(2:n-1))...
-    - wCO2(2:n-1) .* duzdz);
+    - wCO2(2:n-1) .* duzdz...
+    + RHOcat*eta*(1-EPS).*Rcomp(2:n-1,3)./(EPS*rhog(2:n-1)));
 resdwCO2dr1 = dwCO2dr(1);
 resdwCO2dr2 = dwCO2dr(n);
 
 dwH2dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwH2dr(2:n-1) + dwH2dr2(2:n-1))...
-    - wH2(2:n-1) .* duzdz);
+    - wH2(2:n-1) .* duzdz...
+    + RHOcat*eta*(1-EPS).*Rcomp(2:n-1,4)./(EPS*rhog(2:n-1)));
 resdwH2dr1 = dwH2dr(1);
 resdwH2dr2 = dwH2dr(n);
 
 dwH2Odz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwH2Odr(2:n-1) + dwH2Odr2(2:n-1))...
-    - wH2O(2:n-1) .* duzdz);
+    - wH2O(2:n-1) .* duzdz...
+    + RHOcat*eta*(1-EPS).*Rcomp(2:n-1,5)./(EPS*rhog(2:n-1)));
 resdwH2Odr1 = dwH2Odr(1);
 resdwH2Odr2 = dwH2Odr(n);
 

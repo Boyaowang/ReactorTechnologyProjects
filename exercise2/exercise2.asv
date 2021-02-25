@@ -24,7 +24,7 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 5;           % Number of radial discretization points
+RP        = 10;           % Number of radial discretization points
 mpart     = 6;            % Number of radial discretization points in the pellet
 
 % Catalyst data
@@ -209,14 +209,15 @@ sumny(4) =  6.12;         % Coefficient for H2       [-]
 sumny(5) = 13.10;         % Coefficient for H2O      [-]
 sumny(6) = 18.50;         % Coefficient for N2       [-]
 
-eta = 0.001; % efficiency factor
+
+Rt = 0.102; % tube radius [m]
 r0 = 0; % Lower integration limit in r-direction
-rn = RADIUSi; % Upper integration limit in r-direction
+rn = Rt; % Upper integration limit in r-direction
 ndisk = RP; % Number of discretization points
 r = (r0:(rn-r0)/(ndisk-1):rn)';
 
 zstart = 0; %[m]
-zend = LENGTH; %[m]
+zend = 6.096; %[m]
 
 %integration span
 zspan=[zstart zend];
@@ -231,13 +232,19 @@ wCO20 = FRACin(3) .*ones(ndisk,1);
 wH20 = FRACin(4) .*ones(ndisk,1);
 wH2O0 = FRACin(5) .*ones(ndisk,1);
 wN2 = FRACin(6) .*ones(ndisk,1);
-T0 = Tin*ones(ndisk,1);
-uz0 = uin*ones(ndisk,1);
+T0 = 500*ones(ndisk,1);
+uz0 = ones(ndisk,1);
 % ur0 = ones(ndisk,1);
-pt0 = pin;
+pt0 = 1000;
 
 init = [wCH40; wCO0; wCO20; wH20; wH2O0; T0; uz0; pt0];
-par = [r0 eta];
+par = [Rt ndisk]
+%% 
+a = 1;
+b = 2;
+f = a;
+a = b;
+b = f;
 
 options = odeset('Stats', 'on');
 % Solving the system of equations
@@ -246,9 +253,11 @@ options = odeset('Stats', 'on');
 
 % Plotting the results
 T = y(:,1:ndisk);
+%C_exp = [1 0.8 0.74 0.65 0.55 0.44 0.39 0.36 0.33 0.31];
+%t_exp = [0 5 10 20 40 80 120 160 200 240];
 figure
 mesh(r,z,T)
-% axis([0 LENGTH 0 RADIUSi 0 max(T)])
+% axis([0 45 0 240 0 1])
 grid on
 xlabel('Radius [{\mu}m]')
 ylabel('Time [min]')
