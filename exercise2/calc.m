@@ -13,7 +13,7 @@ wCO2 = vari(2*n+1:3*n);
 wH2 = vari(3*n+1:4*n);
 wH2O =vari(4*n+1:5*n);
 wN2 = ones(n,1) - wCH4 - wCO -wH2 -wH2O;
-T = vari(5*n+1:6*n) ;
+T = vari(5*n+1:6*n);
 uz = vari(6*n+1:7*n);
 ptot = vari(7*n+1);
 
@@ -64,7 +64,7 @@ dwH2Odr2 = dss042(r0,RADIUSi,n,wH2O,dwH2Odr,2,2)';
 dTdr = dss020(r0,RADIUSi,n,T,1)';
 dTdr2 = dss042(r0,RADIUSi,n,T,dTdr,2,2)';
 
-duzdr =dss020(r0,RADIUSi,n,uz,1)';
+duzdr =dss020(r0,RADIUSi,n,uz,-1)';
 dpdz = ergun(rhog, uz, Re, r);
 
 % transfer mole based to mass based Cpg and DELTAHr
@@ -72,7 +72,7 @@ Cpg = Cpg./MM;
 
 dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1))).*...
        (lambdar(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
-       -DELTAHr(2:n-1).*eta);
+       +DELTAHr(2:n-1).*eta);
    
 [Ur,LAMBDAer]=heatcoef(Re,T,Ymol,mu,Cpg);
 

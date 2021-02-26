@@ -1,6 +1,11 @@
 function []=plottingFunc(start,r,z,y,ndisk)
+
+m = 4;
+n = 2;
+
+subplot(m,n,start+1);
+
 var = y(:,start*ndisk+1:(start+1)*ndisk);
-figure
 mesh(r,z,var)
 % axis([0 LENGTH 0 RADIUSi 0 max(T)])
 grid on

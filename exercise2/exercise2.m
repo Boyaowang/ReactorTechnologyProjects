@@ -24,7 +24,7 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 20;           % Number of radial discretization points
+RP        = 50;           % Number of radial discretization points
 mpart     = 6;            % Number of radial discretization points in the pellet
 
 % Catalyst data
@@ -233,7 +233,6 @@ wH2O0 = FRACin(5) .*ones(ndisk,1);
 wN2 = FRACin(6) .*ones(ndisk,1);
 T0 = Tin*ones(ndisk,1);
 uz0 = uin*ones(ndisk,1);
-uz0(ndisk) =0;
 % ur0 = ones(ndisk,1);
 pt0 = pin;
 
@@ -275,3 +274,14 @@ options = odeset('Mass', M, 'Stats', 'on');
 for i=0:6
 plottingFunc(i,r,z,y,ndisk);
 end
+
+m = 4;
+n = 2;
+
+subplot(m,n,8);
+plot(z,y(:,(Ncomp+1)*ndisk+1))
+title('total pressure profile')
+xlabel('z [m]') 
+ylabel('Ptot [Pa]')
+
+
