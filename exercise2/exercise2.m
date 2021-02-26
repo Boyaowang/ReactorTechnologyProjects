@@ -14,7 +14,7 @@ global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
 
 %Initial data
 %-------------------------------------------------------------------
-Tin = 1000;               % Initial temperature      [K]
+Tin = 793;               % Initial temperature      [K]
 pin = 29e5;               % Initial pressure         [Pa]
 uin = 1.89;               % Velocity                 [m/s]
 
@@ -24,7 +24,7 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 5;           % Number of radial discretization points
+RP        = 20;           % Number of radial discretization points
 mpart     = 6;            % Number of radial discretization points in the pellet
 
 % Catalyst data
@@ -39,7 +39,7 @@ av     = 3/rp.*(1-EPS);   % Particle surface area per volume [1/m]
 
 % Tube data
 %-------------------------------------------------------------------
-TEMPout  = 1000;          % Temp. outside the tube   [K]
+TEMPout  = 1100;          % Temp. outside the tube   [K]
 LAMBDAst = 52;            % Heat coef. for tube metal[W/mK]
 RADIUSi  = 0.051;         % Inner radius of the tube [m]
 RADIUSo  = 0.066;         % Outer radius of the tube [m]
@@ -233,23 +233,45 @@ wH2O0 = FRACin(5) .*ones(ndisk,1);
 wN2 = FRACin(6) .*ones(ndisk,1);
 T0 = Tin*ones(ndisk,1);
 uz0 = uin*ones(ndisk,1);
+uz0(ndisk) =0;
 % ur0 = ones(ndisk,1);
 pt0 = pin;
 
 init = [wCH40; wCO0; wCO20; wH20; wH2O0; T0; uz0; pt0];
-par = [r0 eta];
+par = [r0 eta uin];
 
-options = odeset('Stats', 'on');
+M = eye((Ncomp+1)*RP+1);
+for i=1:ndisk:(Ncomp)*ndisk+1
+    M(i,i) = 0;
+    M(i+RP-1,i+RP-1) =0;
+end
+
+options = odeset('Mass', M, 'Stats', 'on');
 % Solving the system of equations
-[z,y] = ode45(@calc,zspan,init,options, par,r);
+[z,y] = ode15s(@calc,zspan,init,options, par,r);
+
+% % Plotting the wCh4
+% T = y(:,5*ndisk+1:6*ndisk);
+% figure
+% mesh(r,z,T)
+% % axis([0 LENGTH 0 RADIUSi 0 max(T)])
+% grid on
+% xlabel('Radius [m]')
+% ylabel('Z [m]')
+% zlabel('Temperature [K]');
 
 
-% Plotting the results
-T = y(:,1:ndisk);
-figure
-mesh(r,z,T)
-% axis([0 LENGTH 0 RADIUSi 0 max(T)])
-grid on
-xlabel('Radius [{\mu}m]')
-ylabel('Time [min]')
-zlabel('Normalized concentration in the particle [c_i/c_0]');
+
+
+% % Plotting the Temperature
+% T = y(:,5*ndisk+1:6*ndisk);
+% figure
+% mesh(r,z,T)
+% % axis([0 LENGTH 0 RADIUSi 0 max(T)])
+% grid on
+% xlabel('Radius [m]')
+% ylabel('Z [m]')
+% zlabel('Temperature [K]');
+for i=0:6
+plottingFunc(i,r,z,y,ndisk);
+end

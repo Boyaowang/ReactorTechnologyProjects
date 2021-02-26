@@ -14,7 +14,7 @@ global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
 
 %Initial data
 %-------------------------------------------------------------------
-Tin = 1000;               % Initial temperature      [K]
+Tin = 793;               % Initial temperature      [K]
 pin = 29e5;               % Initial pressure         [Pa]
 uin = 1.89;               % Velocity                 [m/s]
 
@@ -24,7 +24,7 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 10;           % Number of radial discretization points
+RP        = 3;           % Number of radial discretization points
 mpart     = 6;            % Number of radial discretization points in the pellet
 
 % Catalyst data
@@ -39,7 +39,7 @@ av     = 3/rp.*(1-EPS);   % Particle surface area per volume [1/m]
 
 % Tube data
 %-------------------------------------------------------------------
-TEMPout  = 1000;          % Temp. outside the tube   [K]
+TEMPout  = 1100;          % Temp. outside the tube   [K]
 LAMBDAst = 52;            % Heat coef. for tube metal[W/mK]
 RADIUSi  = 0.051;         % Inner radius of the tube [m]
 RADIUSo  = 0.066;         % Outer radius of the tube [m]
@@ -209,15 +209,14 @@ sumny(4) =  6.12;         % Coefficient for H2       [-]
 sumny(5) = 13.10;         % Coefficient for H2O      [-]
 sumny(6) = 18.50;         % Coefficient for N2       [-]
 
-
-Rt = 0.102; % tube radius [m]
+eta = 0.001; % efficiency factor
 r0 = 0; % Lower integration limit in r-direction
-rn = Rt; % Upper integration limit in r-direction
+rn = RADIUSi; % Upper integration limit in r-direction
 ndisk = RP; % Number of discretization points
 r = (r0:(rn-r0)/(ndisk-1):rn)';
 
 zstart = 0; %[m]
-zend = 6.096; %[m]
+zend = LENGTH; %[m]
 
 %integration span
 zspan=[zstart zend];
@@ -232,32 +231,30 @@ wCO20 = FRACin(3) .*ones(ndisk,1);
 wH20 = FRACin(4) .*ones(ndisk,1);
 wH2O0 = FRACin(5) .*ones(ndisk,1);
 wN2 = FRACin(6) .*ones(ndisk,1);
-T0 = 500*ones(ndisk,1);
-uz0 = ones(ndisk,1);
+T0 = Tin*ones(ndisk,1);
+uz0 = uin*ones(ndisk,1);
 % ur0 = ones(ndisk,1);
-pt0 = 1000;
+pt0 = pin;
 
 init = [wCH40; wCO0; wCO20; wH20; wH2O0; T0; uz0; pt0];
-par = [Rt ndisk]
-%% 
-a = 1;
-b = 2;
-f = a;
-a = b;
-b = f;
+par = [r0 eta uin];
 
-options = odeset('Stats', 'on');
+M = eye((Ncomp+1)*RP+1);
+for i=1:ndisk:(Ncomp)*ndisk+1
+    M(i,i) = 0;
+    M(i+RP-1,i+RP-1) =0;
+end
+
+options = odeset('Mass', M, 'Stats', 'on');
 % Solving the system of equations
 [z,y] = ode45(@calc,zspan,init,options, par,r);
 
 
 % Plotting the results
 T = y(:,1:ndisk);
-%C_exp = [1 0.8 0.74 0.65 0.55 0.44 0.39 0.36 0.33 0.31];
-%t_exp = [0 5 10 20 40 80 120 160 200 240];
 figure
 mesh(r,z,T)
-% axis([0 45 0 240 0 1])
+% axis([0 LENGTH 0 RADIUSi 0 max(T)])
 grid on
 xlabel('Radius [{\mu}m]')
 ylabel('Time [min]')
