@@ -40,7 +40,7 @@ zspan=[zstart zend];
 %initial conditions
 y0=[p0 T0 us_0 pso2_0 po2_0 pso3_0];
 
-[z,y]=ode15s(@yderiv,zspan,y0);
+[z,y]=ode45(@yderiv,zspan,y0);
 
 pn2Plot = y(:,1) - y(:,4) -y(:,5) -y(:,6);
 

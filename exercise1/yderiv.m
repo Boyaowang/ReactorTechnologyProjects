@@ -39,7 +39,7 @@ dptdz=-f_coeff*rhog*us^2/dp;
 dusdz=-us/ptot*(dptdz-ptot/T*dTdz);
 dpso2dz=-pso2/us*dusdz + pso2/T*dTdz + rhob*R*T*rso2/us;
 dpo2dz=-po2/us*dusdz + po2/T*dTdz + rhob*R*T*ro2/us;
-dpso3dz=-pso3/us*dusdz + pso3/T*dTdz + rhob*R*T*rso3/us;
+dpso3dz=-pso3/us*dusdz + pso3/T*dTdz + rhob*R*T*rso3/us; 
 %dpn2dz=-pn2/us*dusdz + pn2/T*dTdz;
 
 dydz=[dptdz;dTdz;dusdz;dpso2dz;dpo2dz;dpso3dz];

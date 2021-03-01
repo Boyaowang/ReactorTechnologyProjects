@@ -14,7 +14,7 @@ global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
 
 %Initial data
 %-------------------------------------------------------------------
-Tin = 793;               % Initial temperature      [K]
+Tin = 794;               % Initial temperature      [K]
 pin = 29e5;               % Initial pressure         [Pa]
 uin = 1.89;               % Velocity                 [m/s]
 

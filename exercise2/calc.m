@@ -37,7 +37,7 @@ for i=1:Ncomp
 end
 
 %Gas conductivity
-lambdar = LAMBDAG(Ymass,T)';
+lambdar = LAMBDAG(Ymol,T)';
 
 %Calculation of rhog:
 
@@ -70,11 +70,11 @@ dpdz = ergun(rhog, uz, Re, r);
 % transfer mole based to mass based Cpg and DELTAHr
 Cpg = Cpg./MM;
 
-dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1))).*...
-       (lambdar(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
-       +DELTAHr(2:n-1).*eta);
-   
 [Ur,LAMBDAer]=heatcoef(Re,T,Ymol,mu,Cpg);
+
+dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1))).*...
+       (LAMBDAer(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
+       +DELTAHr(2:n-1).*eta);
 
 resdTdz1 = dTdr(1);
 resdTdz2 = dTdr(n)+Ur/LAMBDAer(RP)*(T(RP)-TEMPout); %% todo
