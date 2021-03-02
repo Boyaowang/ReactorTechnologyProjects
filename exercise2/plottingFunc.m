@@ -1,13 +1,13 @@
 function []=plottingFunc(start,r,z,y,ndisk)
-
-m = 4;
+global RADIUSi LENGTH
+m = 3;
 n = 2;
 
 subplot(m,n,start+1);
 
 var = y(:,start*ndisk+1:(start+1)*ndisk);
 mesh(r,z,var)
-% axis([0 LENGTH 0 RADIUSi 0 max(T)])
+axis([0 RADIUSi 0 LENGTH])
 grid on
 xlabel('Radius [m]')
 ylabel('Z [m]')
@@ -27,9 +27,12 @@ if(start==4)
     zlabel('H2O mass fraction [-]');
 end
 if(start==5)
-    zlabel('Temperature [K]');
+    zlabel('N2 mass fraction [-]');
 end
 if(start==6)
+    zlabel('Temperature [K]');
+end
+if(start==7)
     zlabel('Uz [m/s]');
 end
 

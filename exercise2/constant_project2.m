@@ -1,7 +1,3 @@
-clc;
-close all;
-clear all;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                  %
 %          INPUT FILE FOR SIMULATION OF STEAM REFORMER             %
@@ -9,8 +5,8 @@ clear all;
 %                                                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
-    RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny ...
-    MM
+    RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny...
+    MM LENGTH
 
 %Initial data
 %-------------------------------------------------------------------
@@ -24,7 +20,7 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 50;           % Number of radial discretization points
+RP        = 10;           % Number of radial discretization points
 mpart     = 6;            % Number of radial discretization points in the pellet
 
 % Catalyst data
@@ -55,6 +51,7 @@ FRACin(4) = 0.0029;       % H2
 FRACin(5) = 0.7218;       % H2O
 FRACin(6) = 0.0641;       % N2
 
+
 % Molemass of the components                         [kg/kmole]
 %-------------------------------------------------------------------
 
@@ -65,14 +62,7 @@ MMASS(4) =  2.02;         % Molemass H2
 MMASS(5) = 18.02;         % Molemass H2O
 MMASS(6) = 28.01;         % Molemass N2
 
-% Initial molefraction of the components 
-Ymol = convert(FRACin);
 
-%Mean Molemass:
-
-%-----------------------------------------------------------------------
-
-MM = 1/(sum(FRACin./MMASS));
 % Preexponential factors for the rate constants      [kmole/kgcat h]
 %-------------------------------------------------------------------
 AJ(1) = 4.255E15;         % Factor for rx. 1
@@ -209,79 +199,10 @@ sumny(4) =  6.12;         % Coefficient for H2       [-]
 sumny(5) = 13.10;         % Coefficient for H2O      [-]
 sumny(6) = 18.50;         % Coefficient for N2       [-]
 
-eta = 0.001; % efficiency factor
-r0 = 0; % Lower integration limit in r-direction
-rn = RADIUSi; % Upper integration limit in r-direction
-ndisk = RP; % Number of discretization points
-r = (r0:(rn-r0)/(ndisk-1):rn)';
+%Added in project 2:
+%Mean Molemass:
 
-zstart = 0; %[m]
-zend = LENGTH; %[m]
+%-----------------------------------------------------------------------
 
-%integration span
-zspan=[zstart zend];
-
-% Parameter vector which is sent into the function
-% rpar = [Rp epsilon qm Kd De r0 rn ndisk kf kl v V];
-
-% Initialization
-wCH40 = FRACin(1) .*ones(ndisk,1);
-wCO0 = FRACin(2) .*ones(ndisk,1);
-wCO20 = FRACin(3) .*ones(ndisk,1);
-wH20 = FRACin(4) .*ones(ndisk,1);
-wH2O0 = FRACin(5) .*ones(ndisk,1);
-wN2 = FRACin(6) .*ones(ndisk,1);
-T0 = Tin*ones(ndisk,1);
-uz0 = uin*ones(ndisk,1);
-% ur0 = ones(ndisk,1);
-pt0 = pin;
-
-init = [wCH40; wCO0; wCO20; wH20; wH2O0; T0; uz0; pt0];
-par = [r0 eta uin];
-
-M = eye((Ncomp+1)*RP+1);
-for i=1:ndisk:(Ncomp)*ndisk+1
-    M(i,i) = 0;
-    M(i+RP-1,i+RP-1) =0;
-end
-
-options = odeset('Mass', M, 'Stats', 'on');
-% Solving the system of equations
-[z,y] = ode15s(@calc,zspan,init,options, par,r);
-
-% % Plotting the wCh4
-% T = y(:,5*ndisk+1:6*ndisk);
-% figure
-% mesh(r,z,T)
-% % axis([0 LENGTH 0 RADIUSi 0 max(T)])
-% grid on
-% xlabel('Radius [m]')
-% ylabel('Z [m]')
-% zlabel('Temperature [K]');
-
-
-
-
-% % Plotting the Temperature
-% T = y(:,5*ndisk+1:6*ndisk);
-% figure
-% mesh(r,z,T)
-% % axis([0 LENGTH 0 RADIUSi 0 max(T)])
-% grid on
-% xlabel('Radius [m]')
-% ylabel('Z [m]')
-% zlabel('Temperature [K]');
-for i=0:6
-plottingFunc(i,r,z,y,ndisk);
-end
-
-m = 4;
-n = 2;
-
-subplot(m,n,8);
-plot(z,y(:,(Ncomp+1)*ndisk+1))
-title('total pressure profile')
-xlabel('z [m]') 
-ylabel('Ptot [Pa]')
-
+MM = 1/(sum(FRACin./MMASS));
 
