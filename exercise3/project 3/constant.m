@@ -5,7 +5,8 @@
 %                                                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
-    RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny rp
+    RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny rp...
+    pin MM mpart
 
 %Initial data
 %-------------------------------------------------------------------
@@ -20,7 +21,7 @@ GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
 RP        = 5;            % Number of radial discretization points
-mpart     = 40;            % Number of radial discretization points in the pellet
+mpart     = 5;            % Number of radial discretization points in the pellet
 
 % Catalyst data
 %-------------------------------------------------------------------
@@ -61,6 +62,7 @@ MMASS(4) =  2.02;         % Molemass H2
 MMASS(5) = 18.02;         % Molemass H2O
 MMASS(6) = 28.01;         % Molemass N2
 
+MM = 1/(sum(FRACin./MMASS));
 
 % Preexponential factors for the rate constants      [kmole/kgcat h]
 %-------------------------------------------------------------------
