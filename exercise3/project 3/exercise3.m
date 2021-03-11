@@ -30,45 +30,18 @@ par = [r0 eta uin];
 options = optimoptions('fsolve','Display','none','PlotFcn',@optimplotfirstorderopt);
 
 func = @calc;
-results = fsolve(@calc, init, options);
+y = fsolve(@calc, init, options);
 
 
 
-% %Define the result vector:
-% n = mpart;
-% wCH4 = y(:,1:n);
-% wCO = y(:,n+1:2*n) ;
-% wCO2 = y(:,2*n+1:3*n);
-% wH2 = y(:,3*n+1:4*n);
-% wH2O =y(:,4*n+1:5*n);
-% wN2 = ones(size(wCH4)) - wCH4 - wCO -wH2 -wH2O;
-% T = y(:,5*mpart+1:6*mpart);
+%Define the result vector:
+n = mpart;
+wCH4 = y(1:n);
+wCO = y(n+1:2*n) ;
+wCO2 = y(2*n+1:3*n);
+wH2 = y(3*n+1:4*n);
+wH2O =y(4*n+1:5*n);
+wN2 = 1 - wCH4 - wCH4 - wCO -wH2 -wH2O;
+T = y(5*mpart+1:6*mpart);
 % %%%%%%%%%%%%%%%%%%%%%%% Ploting the results %%%%%%%%%%%%%%%%%%%%
-% 
-% %plot the tempt + mass fraction profiles:
-% for i=0:5
-% plottingFunc(i,r,z,y,mpart);
-% subplot(3,2,6);
-% mesh(r,z,wN2)
-% axis([0 RADIUSi 0 LENGTH])
-% grid on
-% xlabel('Radius [m]')
-% ylabel('Z [m]')
-% zlabel('N2 mass fraction [-]');
-% end
-% 
-% 
-% %Plot the pressure profile
-% figure()
-% plot(z,y(:,(Ncomp+1)*mpart+1))
-% title('total pressure profile')
-% xlabel('z [m]') 
-% ylabel('Ptot [Pa]')
-% 
-% % % Plotting the Temperature
-% figure
-% mesh(r,z,T)
-% grid on
-% xlabel('Radius [m]')
-% ylabel('Z [m]')
-% zlabel('Temperature [K]');
+
