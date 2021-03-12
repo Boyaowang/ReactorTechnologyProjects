@@ -30,7 +30,7 @@ VIS = viscosity(Ymol,T)';
 
 %Diffusivity
 for i = 1:mpart
-    [Dim(i,:),k(i,:)]=masscoef(pin,T(i),rhog(i),uin,VIS(mpart),Ymass(i,:));
+    [Dim(i,:),k(i,:)]=masscoef(pin,T(i),rhog(i),uin,VIS(i),Ymass(i,:));
 end
 
 %Create the Matrix Rcomp and column vector for the enthalpy Note that these
@@ -91,7 +91,7 @@ LAMBDA = 50;                                                    %Unfinished
 % F_T = dTdr2 + RHOcat.*DELTAHr;
 dTdr = dss020(r(1),rp,mpart,T,-1)';
 dTdr2 = dss042(r(1),rp,mpart,T,dTdr,2,2)';
-F_T = LAMBDA.*(2*dTdr + r'.*dTdr2) - r'.*DELTAHr;
+F_T = LAMBDA.*((2./r').*dTdr + dTdr2) + DELTAHr;
 
 
 % boundaries particle center 
