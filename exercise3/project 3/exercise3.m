@@ -45,6 +45,8 @@ wN2 = 1 - wCH4 - wCH4 - wCO -wH2 -wH2O;
 T = y(5*mpart+1:6*mpart);
 % %%%%%%%%%%%%%%%%%%%%%%% Ploting the results %%%%%%%%%%%%%%%%%%%%
 for i=1:Ncomp
-    figure()
+    m = 3;
+    n = 2;
+    subplot(m,n,i);
     plot(r, y((i-1)*mpart+1:i*mpart));
 end

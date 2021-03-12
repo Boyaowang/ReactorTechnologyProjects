@@ -24,7 +24,7 @@ for i=1:Ncomp
         (Ptot*1e-5*sqrt(Mib(i,j))*(sumny(i)^(1/3)+sumny(j)^(1/3))^2);
     % Calculation of the mass transfer coefficients    
         if i ~= j
-            Dsum(i) = Dsum(i) + (w(i)/(MMASS(j)*Dij(i,j)));
+            Dsum(i) = Dsum(i) + (w(j)/(MMASS(j)*Dij(i,j)));
         end
     end
     Dim(i) = (1-w(i))/(MM*Dsum(i));
