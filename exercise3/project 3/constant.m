@@ -6,7 +6,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
     RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny rp...
-    pin MM mpart
+    pin MM mpart uin Tin
 
 %Initial data
 %-------------------------------------------------------------------

@@ -14,9 +14,9 @@
 
 function [Dim,k]=masscoef(Ptot,T,rhog,vz,viscg,w)
 
-global MMASS Ncomp Dp sumny MM
+global MMASS Ncomp  Dp sumny MM
 for i=1:Ncomp
-    Dsum(i) = 0;
+    sum(i) = 0;
     for j=1:Ncomp
     % Calculation of the diffusion coefficients
         Mib(i,j)= 2*(1/MMASS(i)+1/MMASS(j))^(-1);
@@ -24,10 +24,10 @@ for i=1:Ncomp
         (Ptot*1e-5*sqrt(Mib(i,j))*(sumny(i)^(1/3)+sumny(j)^(1/3))^2);
     % Calculation of the mass transfer coefficients    
         if i ~= j
-            Dsum(i) = Dsum(i) + (w(i)/(MMASS(j)*Dij(i,j)));
+            sum(i) = sum(i) + (w(i)/(MMASS(j)*Dij(i,j)));
         end
     end
-    Dim(i) = (1-w(i))/(MM*Dsum(i));
+    Dim(i) = (1-w(i))/(MM*sum(i));
     k(i) = vz.*1.17.*(Dp*vz.*rhog./viscg).^(-0.42)...
                 .*(viscg./(rhog.*Dim(i))).^(-0.67);
 

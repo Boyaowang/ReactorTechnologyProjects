@@ -48,7 +48,7 @@ end
 %%%%%%%% CH4 %%%%%%%%%%%%%%
 dwCH4dr = dss020(r(1),rp,mpart,wCH4,1)';
 dwCH4dr2 = dss042(r(1),rp,mpart,wCH4,dwCH4dr,2,2)';
-F_CH4 = rhog.*Dim(:,1).*((1/2)*dwCH4dr+r.*dwCH4dr2) + RHOcat.*Rcomp(:,1).*(1-EPS);
+F_CH4 = rhog*Dim(:,1)*(dwCH4dr+r*dwCH4dr2) + RHOcat.*Rcomp(:,1).*(1-EPS);
 % d1dr_CH4 = dss020(r(1),rp,mpart,wCH4,1)';
 % dwCH4dr = -((r.^2)'.*(rhog.*Dim(:,1))).*dss020(r(1),rp,mpart,wCH4,1)';
 % dwCH4dr2 = dss042(r(1),rp,mpart,wCH4,dwCH4dr,2,2)';
@@ -57,7 +57,7 @@ F_CH4 = rhog.*Dim(:,1).*((1/2)*dwCH4dr+r.*dwCH4dr2) + RHOcat.*Rcomp(:,1).*(1-EPS
 %%%%%%%% CO %%%%%%%%%%%%%%
 dwCOdr = dss020(r(1),rp,mpart,wCO,1)';
 dwCOdr2 = dss042(r(1),rp,mpart,wCO,dwCOdr,2,2)';
-F_CO = rhog.*Dim(:,2).*((1/2)*dwCOdr+r.*dwCOdr2) + RHOcat.*Rcomp(:,2).*(1-EPS);
+F_CO = rhog*Dim(:,2)*(dwCOdr+r*dwCOdr2) + RHOcat.*Rcomp(:,2).*(1-EPS);
 % d1dr_CO = dss020(r(1),rp,mpart,wCO,1)';
 % dwCOdr = -((r.^2)'.*(rhog.*Dim(:,2))).*dss020(r(1),rp,mpart,wCO,1)';
 % dwCOdr2 = dss042(r(1),rp,mpart,wCO,dwCOdr,2,2)';
@@ -70,32 +70,38 @@ F_CO = rhog.*Dim(:,2).*((1/2)*dwCOdr+r.*dwCOdr2) + RHOcat.*Rcomp(:,2).*(1-EPS);
 % F_CO2 = (-1./r').*dwCO2dr2 +RHOcat.*Rcomp(:,3).*(1-EPS);
 dwCO2dr = dss020(r(1),rp,mpart,wCO2,1)';
 dwCO2dr2 = dss042(r(1),rp,mpart,wCO2,dwCO2dr,2,2)';
-F_CO2 = rhog.*Dim(:,3).*((1/2)*dwCO2dr+r.*dwCO2dr2) + RHOcat.*Rcomp(:,3).*(1-EPS);
+F_CO2 = rhog*Dim(:,3)*(dwCO2dr+r*dwCO2dr2) + RHOcat.*Rcomp(:,3).*(1-EPS);
 
 %%%%%%%% H2 %%%%%%%%%%%%%%
 dwH2dr = dss020(r(1),rp,mpart,wH2,1)';
 dwH2dr2 = dss042(r(1),rp,mpart,wH2,dwH2dr,2,2)';
-F_H2 = rhog.*Dim(:,4).*((1/2)*dwH2dr+r.*dwH2dr2) + RHOcat.*Rcomp(:,4).*(1-EPS);
+F_H2 = rhog*Dim(:,4)*(dwH2dr+r*dwH2dr2) + RHOcat.*Rcomp(:,4).*(1-EPS);
 
-%%%%%%% H2O %%%%%%%%%%%%%%
-dwH2Odr = dss020(r(1),rp,mpart,wH2O,1)';
-dwH2Odr2 = dss042(r(1),rp,mpart,wH2O,dwH2Odr,2,2)';
-F_H2O = rhog.*Dim(:,5).*((1/2).*dwH2Odr+r.*dwH2Odr2) + RHOcat.*Rcomp(:,5).*(1-EPS);
+%%%%%%%% H2O %%%%%%%%%%%%%%
+% dwH2Odr = dss020(r(1),rp,mpart,wH2O,1)';
+% dwH2Odr2 = dss042(r(1),rp,mpart,wH2O,dwH2Odr,2,2)';
+% 
+% for i=2:mpart-1
+%     dwH2Odr2(i) = dwH2Odr2(i) +RHOcat.*Rcomp(i,5)./(rhog(i));
+% end
 
 
 %Temperature equation:
 LAMBDA = 50;                                                    %Unfinished
-% d1dr_T = dss020(r(1),rp,mpart,T,1)';
-% dTdr = (r.^2)'.*(-LAMBDA*dss020(r(1),rp,mpart,T,1)');
-% dTdr2 = (-1./r.^2)'.*dss042(r(1),rp,mpart,T,dTdr,2,2)';
-% F_T = dTdr2 + RHOcat.*DELTAHr;
-dTdr = dss020(r(1),rp,mpart,T,1)';
-dTdr2 = dss042(r(1),rp,mpart,T,dTdr,2,2)';
-F_T = LAMBDA*((1./(2*r)).*dTdr + dTdr2) + RHOcat.*DELTAHr;
+d1dr_T = dss020(r(1),rp,mpart,T,1)';
+dTdr = (r.^2)'.*(-LAMBDA*dss020(r(1),rp,mpart,T,1)');
+dTdr2 = (-1./r.^2)'.*dss042(r(1),rp,mpart,T,dTdr,2,2)';
+F_T = dTdr2 + RHOcat.*DELTAHr;
+% dTdr = dss020(r(1),rp,mpart,T,1)';
+% dTdr2 = dss042(r(1),rp,mpart,T,dTdr,2,2)';
+% 
+% for i=2:mpart-1
+%     dTdr2(i) = dTdr2(i) +r(i).^2.*DELTAHr(i);
+% end
 
 
 % boundaries particle center 
-F_CH4(1) = dwH2dr(1);
+F_CH4(1) = d1dr_CH4(1);
 F_CO(1) = d1dr_CO(1);
 F_CO2(1) = d1dr_CO2(1);
 F_H2(1) = d1dr_H2(1);
@@ -125,7 +131,8 @@ F_CO(mpart) = d1dr_CO(mpart) + (k_CO/Dim(mpart,2))*(wCO(mpart) - wbulk_CO);
 F_CO2(mpart) = d1dr_CO2(mpart) + (k_CO2/Dim(mpart,3))*(wCO2(mpart) - wbulk_CO2);
 F_H2(mpart) = d1dr_H2(mpart) + (k_H2/Dim(mpart,4))*(wH2(mpart) - wbulk_H2);
 F_H2O(mpart) = d1dr_H2O(mpart) + (k_H2O/Dim(mpart,5))*(wH2O(mpart) - wbulk_H2O);
-F_T(mpart) = d1dr_T(mpart) + h/LAMBDA_b*(T(mpart) - Tbulk);
+F_T(mpart) = d1dr_T(mpart) + h/LAMBDA_b*(T(mpart) -
+Tbulk);
 
 dydr = [F_CH4;F_CO;F_CO2;F_H2;F_H2O;F_T];
 end
