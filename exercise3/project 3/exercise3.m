@@ -36,17 +36,48 @@ y = fsolve(@calc, init, options);
 
 %Define the result vector:
 n = mpart;
-wCH4 = y(1:n);
-wCO = y(n+1:2*n) ;
-wCO2 = y(2*n+1:3*n);
-wH2 = y(3*n+1:4*n);
-wH2O =y(4*n+1:5*n);
+wCH4 = y(1:mpart);
+wCO = y(mpart+1:2*mpart) ;
+wCO2 = y(2*mpart+1:3*mpart);
+wH2 = y(3*mpart+1:4*mpart);
+wH2O =y(4*mpart+1:5*mpart);
 wN2 = 1 - wCH4 - wCH4 - wCO -wH2 -wH2O;
 T = y(5*mpart+1:6*mpart);
-% %%%%%%%%%%%%%%%%%%%%%%% Ploting the results %%%%%%%%%%%%%%%%%%%%
-for i=1:Ncomp
+
+%%%%%%%%%%%%%%%%%% Ploting the results (species fraction)%%%%%%%%%%%%%%%%%%
+for i=1:Ncomp-1
     m = 3;
     n = 2;
     subplot(m,n,i);
     plot(r, y((i-1)*mpart+1:i*mpart));
+
+    xlabel('z [m]') 
+    ylabel('y [-]')
+    
+if(i==1)
+    title('CH4 mass fraction [-]');
 end
+if(i==2)
+    title('CO mass fraction [-]');
+end
+if(i==3)
+    title('CO2 mass fraction [-]');
+end
+if(i==4)
+    title('H2 mass fraction [-]');
+end
+if(i==5)
+    title('H2O mass fraction [-]');
+end
+
+end
+subplot(m,n,6);
+plot(r, wN2);
+xlabel('r [m]') 
+ylabel('y [-]')
+title('N2 mass fraction [-]');
+figure()
+plot(r, T)
+xlabel('r [m]') 
+ylabel('T [K]')
+title('Temperature [K]');

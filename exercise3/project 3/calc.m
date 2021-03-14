@@ -10,7 +10,7 @@ wCO = vars(mpart+1:2*mpart) ;
 wCO2 = vars(2*mpart+1:3*mpart);
 wH2 = vars(3*mpart+1:4*mpart);
 wH2O =vars(4*mpart+1:5*mpart);
-wN2 = ones(mpart,1) - wCH4 - wCO -wH2 -wH2O-wCO2;
+wN2 = ones(mpart,1) - wCH4 - wCO -wH2 -wH2O - wCO2;
 T = vars(5*mpart+1:6*mpart);
 
 %Calculation of rhog:
@@ -91,7 +91,7 @@ LAMBDA = 50;                                                    %Unfinished
 % F_T = dTdr2 + RHOcat.*DELTAHr;
 dTdr = dss020(r(1),rp,mpart,T,-1)';
 dTdr2 = dss042(r(1),rp,mpart,T,dTdr,2,2)';
-F_T = LAMBDA.*(2*dTdr + r'.*dTdr2) - r'.*DELTAHr;
+F_T = LAMBDA.*(2*dTdr + r'.*dTdr2) + r'.*DELTAHr;
 
 
 % boundaries particle center 

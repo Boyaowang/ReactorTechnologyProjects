@@ -21,7 +21,7 @@ GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
 RP        = mpart;            % Number of radial discretization points
-mpart     = 40;            % Number of radial discretization points in the pellet
+mpart     = 50;            % Number of radial discretization points in the pellet
 
 % Catalyst data
 %-------------------------------------------------------------------
