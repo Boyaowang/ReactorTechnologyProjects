@@ -41,7 +41,7 @@ wCO = y(mpart+1:2*mpart) ;
 wCO2 = y(2*mpart+1:3*mpart);
 wH2 = y(3*mpart+1:4*mpart);
 wH2O =y(4*mpart+1:5*mpart);
-wN2 = 1 - wCH4 - wCH4 - wCO -wH2 -wH2O;
+wN2 = 1 - wCH4 - wCO2 - wCO -wH2 -wH2O;
 T = y(5*mpart+1:6*mpart);
 
 %%%%%%%%%%%%%%%%%% Ploting the results (species fraction)%%%%%%%%%%%%%%%%%%
@@ -51,7 +51,7 @@ for i=1:Ncomp-1
     subplot(m,n,i);
     plot(r, y((i-1)*mpart+1:i*mpart));
 
-    xlabel('z [m]') 
+    xlabel('R [m]') 
     ylabel('y [-]')
     
 if(i==1)
@@ -73,7 +73,7 @@ end
 end
 subplot(m,n,6);
 plot(r, wN2);
-xlabel('r [m]') 
+xlabel('R [m]') 
 ylabel('y [-]')
 title('N2 mass fraction [-]');
 figure()
