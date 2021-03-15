@@ -8,7 +8,7 @@ eta = 0.001; % efficiency factor
 %%%%%%%%%%%%%%%%% Sizing the r- and z-direction %%%%%%%%%%%%%
 % r-direction:
 r0 = 0; % Lower integration limit in r-direction
-rn = RADIUSi; % Upper integration limit in r-direction
+rn = rp; % Upper integration limit in r-direction
 r = (r0:(rn-r0)/(mpart-1):rn)';
 
 %%%%%%%%%%%%%%%%%%%% Initialization %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,6 +45,7 @@ wN2 = 1 - wCH4 - wCO2 - wCO -wH2 -wH2O;
 T = y(5*mpart+1:6*mpart);
 
 %%%%%%%%%%%%%%%%%% Ploting the results (species fraction)%%%%%%%%%%%%%%%%%%
+figure()
 for i=1:Ncomp-1
     m = 3;
     n = 2;
