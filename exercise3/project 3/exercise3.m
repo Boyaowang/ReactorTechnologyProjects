@@ -82,3 +82,9 @@ plot(r, T)
 xlabel('r [m]') 
 ylabel('T [K]')
 title('Temperature [K]');
+
+figure()
+plot(r, wCH4);
+xlabel('R [m]')
+ylabel('y [-]')
+title(['CH4 mass fraction (rp = ',num2str(rp),') [-]']);
