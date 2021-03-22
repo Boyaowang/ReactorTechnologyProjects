@@ -46,8 +46,11 @@ end
 
 %Gas heat capacity:
 Cpg = cp(Ymol,T)';
-%Viscocity:
+%Viscocity for gas:
 mu = viscosity(Ymol, T)';
+
+%Viscocity for solid:
+
 %Calculation of rhog:
 rhog = (ptot*MM)./(GASCONST*T);
 %Reynold number :
@@ -58,7 +61,7 @@ Cpg = Cpg./MM;
 [Ur,LAMBDAer]=heatcoef(Re,T,Ymol,mu,Cpg);
 %Mass transfer coef:
 for i=1:RP
-[Dim(i,:),k(i,:)]=masscoef(ptots,Ts(i),rhog(i),uzs,VIS(mpart),Ymass(i,:));
+[Dim(i,:),k(i,:)]=masscoef(ptots,Ts(i),rhog(i),uzs(i),VIS(mpart),Ymass(i,:));
 end
 %%%%%%%%%%%%%%%%%%%%%%%%% generate the solver %%%%%%%%%%%%%%%%%%%%
 %Create 1st and 2nd derivative vector:

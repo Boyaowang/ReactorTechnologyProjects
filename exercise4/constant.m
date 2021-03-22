@@ -20,8 +20,8 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 10;            % Number of radial discretization points
-mpart     = 10;            % Number of radial discretization points in the pellet
+RP        = 5;            % Number of radial discretization points
+mpart     = 5;            % Number of radial discretization points in the pellet
 
 % Catalyst data
 %-------------------------------------------------------------------

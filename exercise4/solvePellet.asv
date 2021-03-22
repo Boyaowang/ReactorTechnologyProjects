@@ -1,0 +1,31 @@
+function yPellet = solvePellet(w_guess,T_guess,ptot)
+constant;
+% %%%%%%%%%%%%%%%%%%%% Initialization %%%%%%%%%%%%%%%%%%%%%%%%%
+% wCH40 = FRACin(1) .*ones(mpart,1);
+% wCO0 = FRACin(2) .*ones(mpart,1);
+% wCO20 = FRACin(3) .*ones(mpart,1);
+% wH20 = FRACin(4) .*ones(mpart,1);
+% wH2O0 = FRACin(5) .*ones(mpart,1);
+% wN2 = FRACin(6) .*ones(mpart,1);
+% T0 = Tin*ones(mpart,1);
+
+wCH40 = w_guess(1) .*ones(mpart,1);
+wCO0 = FRACin(2) .*ones(mpart,1);
+wCO20 = FRACin(3) .*ones(mpart,1);
+wH20 = FRACin(4) .*ones(mpart,1);
+wH2O0 = FRACin(5) .*ones(mpart,1);
+wN2 = FRACin(6) .*ones(mpart,1);
+T0 = Tin*ones(mpart,1);
+
+
+%initial guess vectors:
+init = [wCH40; wCO0; wCO20; wH20; wH2O0; T0];
+%parameters vectors:
+par = [r0 eta uin];
+%%%%%%%%%%%%%%%%%%%%% non-linear system solver %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Create ODE solver:
+options = optimoptions('fsolve','Display','none','PlotFcn',@optimplotfirstorderopt);
+
+func = @calcPellet;
+yPellet = fsolve(@calcPellet, init, options);
