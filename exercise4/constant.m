@@ -6,7 +6,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
     RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny rp...
-    pin MM mpart uin Tin FRACin
+    pin MM mpart uin Tin FRACin av hp
 
 %Initial data
 %-------------------------------------------------------------------
@@ -20,7 +20,7 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 5;            % Number of radial discretization points
+RP        = 6;            % Number of radial discretization points
 mpart     = 5;            % Number of radial discretization points in the pellet
 
 % Catalyst data

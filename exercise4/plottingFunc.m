@@ -7,7 +7,6 @@ subplot(m,n,start+1);
 
 var = y(:,start*ndisk+1:(start+1)*ndisk);
 mesh(r,z,var)
-%axis([0 RADIUSi 0 LENGTH])
 grid on
 xlabel('Radius [m]')
 ylabel('Z [m]')

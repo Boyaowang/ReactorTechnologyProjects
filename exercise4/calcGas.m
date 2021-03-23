@@ -1,6 +1,6 @@
 function dydz = calcGas(z,vari,par,r)
 %%%%%%%%%%%%%%%%%%% Import constants:%%%%%%%%%%%%%%%%%%%%%%
-global MM RP GASCONST RHOcat RADIUSi EPS Ncomp MMASS Dp TEMPout mpart
+global MM RP GASCONST RHOcat RADIUSi EPS Ncomp MMASS Dp TEMPout mpart hp av
 r0 = par(1); % Lower integration limit in r-direction
 eta=par(2); % Efficency factor
 uin = par(3); % initial velocity profile
@@ -37,17 +37,31 @@ Ts = yPellet(6*mpart,:);
 %Diffusivity
 Di=Dp*uin/(1.1 * 8 *(2- (1-Dp/RADIUSi)^2));
 
-%Define mass and molar fractions:
+%Define mass and molar fractions for gas phase:
 Ymass =[wCH4 wCO wCO2 wH2 wH2O wN2];
 Ymol = zeros(RP, 6);
 for i=1:RP
     Ymol(i,:) =  convert(Ymass(i,:));
 end
 
+%Define mass and molar fractions for solid phase:
+YmassS =[wCH4s' wCOs' wCO2s' wH2s' wH2Os' wN2s'];
+YmolS = zeros(RP, 6);
+for i=1:RP
+    YmolS(i,:) =  convert(YmassS(i,:));
+end
+
 %Gas heat capacity:
 Cpg = cp(Ymol,T)';
-%Viscocity:
-mu = viscosity(Ymol, T)';
+%Viscocity for gas:
+mu = viscosity(Ymol, T, RP)';
+
+%Viscocity for solid:
+%VIS = viscosity(YmolS, Ts', mpart)';
+for i=1:RP
+    VIS(i) = viscosityS(YmolS(i,:),Ts(i));
+end
+
 %Calculation of rhog:
 rhog = (ptot*MM)./(GASCONST*T);
 %Reynold number :
@@ -58,7 +72,7 @@ Cpg = Cpg./MM;
 [Ur,LAMBDAer]=heatcoef(Re,T,Ymol,mu,Cpg);
 %Mass transfer coef:
 for i=1:RP
-[Dim(i,:),k(i,:)]=masscoef(ptots,Ts(i),rhog(i),uzs,VIS(mpart),Ymass(i,:));
+[Dim(i,:),k(i,:)]=masscoef(ptot,Ts(i),rhog(i),uz(i),VIS(i),YmassS(i,:));
 end
 %%%%%%%%%%%%%%%%%%%%%%%%% generate the solver %%%%%%%%%%%%%%%%%%%%
 %Create 1st and 2nd derivative vector:
@@ -87,7 +101,7 @@ dpdz = ergun(rhog, uz, Re, r);
 %%%%%%%%%%%%%%%%%%%%%%% %Temperature equation: %%%%%%%%%%%%%%%%%%%%%%%
 dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1).*EPS)).*...
        (LAMBDAer(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
-       -h*av*(T-Ts)); %%Ts,h,av
+       -hp*av*(T(2:n-1)-Ts(2:n-1)')); %%Ts,h,av
 %BCs:
 resdTdz1 = dTdr(1);
 resdTdz2 = dTdr(n)+Ur/LAMBDAer(RP)*(T(RP)-TEMPout); %% todo
@@ -103,7 +117,7 @@ resduzdz2 =duzdr(n);
 dwCH4dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCH4dr(2:n-1) + dwCH4dr2(2:n-1))...
     - wCH4(2:n-1) .* duzdz ...
-    -ki * av/EPS*(wCH4(2:n-1)-wCH4s)); %% ki, wch4s
+    -k((2:n-1),1) .* av./EPS.*(wCH4(2:n-1)-wCH4s(2:n-1)')); %% ki, wch4s
 %BCs:
 resdwCH4dr1 = dwCH4dr(1);
 resdwCH4dr2 = dwCH4dr(n);
@@ -112,7 +126,7 @@ resdwCH4dr2 = dwCH4dr(n);
 dwCOdz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCOdr(2:n-1) + dwCOdr2(2:n-1))...
     - wCO(2:n-1) .* duzdz ...
-    -ki * av/EPS*(wCO(2:n-1)-wCOs));
+    -k((2:n-1),2) .* av./EPS.*(wCO(2:n-1)-wCOs(2:n-1)'));
 resdwCOdr1 = dwCOdr(1);
 resdwCOdr2 = dwCOdr(n);
 
@@ -120,7 +134,7 @@ resdwCOdr2 = dwCOdr(n);
 dwCO2dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwCO2dr(2:n-1) + dwCO2dr2(2:n-1))...
     - wCO2(2:n-1) .* duzdz...
-    -ki * av/EPS*(wCO2(2:n-1)-wCO2s));
+    -k((2:n-1),3) .* av./EPS.*(wCO2(2:n-1)-wCO2s(2:n-1)'));
 resdwCO2dr1 = dwCO2dr(1);
 resdwCO2dr2 = dwCO2dr(n);
 
@@ -128,7 +142,7 @@ resdwCO2dr2 = dwCO2dr(n);
 dwH2dz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwH2dr(2:n-1) + dwH2dr2(2:n-1))...
     - wH2(2:n-1) .* duzdz...
-    -ki * av/EPS*(wH2(2:n-1)-wH2s));
+    -k((2:n-1),4) .* av./EPS.*(wH2(2:n-1)-wH2s(2:n-1)'));
 resdwH2dr1 = dwH2dr(1);
 resdwH2dr2 = dwH2dr(n);
 
@@ -136,7 +150,7 @@ resdwH2dr2 = dwH2dr(n);
 dwH2Odz = 1./uz(2:n-1) ...
     .* (Di/EPS*(1./r(2:n-1).*dwH2Odr(2:n-1) + dwH2Odr2(2:n-1))...
     - wH2O(2:n-1) .* duzdz...
-    -ki * av/EPS*(wH2O(2:n-1)-wH2Os));
+    -k((2:n-1),5) .* av./EPS.*(wH2O(2:n-1)-wH2Os(2:n-1)'));
 resdwH2Odr1 = dwH2Odr(1);
 resdwH2Odr2 = dwH2Odr(n);
 

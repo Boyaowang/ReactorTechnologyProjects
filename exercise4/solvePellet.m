@@ -28,4 +28,4 @@ par = [ptot_guess; uz_guess; T_guess; wCH40(1); wCO0(1); wCO20(1); wH20(1); wH2O
 options = optimoptions('fsolve','Display','none','PlotFcn',@optimplotfirstorderopt);
 
 func = @calcPellet;
-yPellet = fsolve(@(init)calcPellet(init,par), init, options);
+yPellet = fsolve(@(init)calcPellet(init,par), init);

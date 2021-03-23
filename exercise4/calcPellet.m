@@ -29,7 +29,7 @@ for i=1:mpart
 end
 
 %Viscocity:
-VIS = viscosity(Ymol,T)';
+VIS = viscosity(Ymol,T,mpart)';
 
 %Diffusivity
 for i = 1:mpart
