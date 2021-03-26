@@ -12,9 +12,9 @@
 % Dm        [=] m^2/s           Molecular diffusivity
 % k         [=] m/s             Mass transfer coefficient
 
-function [Dim,k]=masscoef(Ptot,T,rhog,vz,viscg,w)
+function [Dim,k]=masscoef(Ptot,T,rhog,vz,viscg,w,MMs)
 
-global MMASS Ncomp Dp sumny MM
+global MMASS Ncomp Dp sumny
 for i=1:Ncomp
     Dsum(i) = 0;
     for j=1:Ncomp
@@ -27,7 +27,7 @@ for i=1:Ncomp
             Dsum(i) = Dsum(i) + (w(j)/(MMASS(j)*Dij(i,j)));
         end
     end
-    Dim(i) = (1-w(i))/(MM*Dsum(i));
+    Dim(i) = (1-w(i))/(MMs.*Dsum(i));
     k(i) = vz.*1.17.*(Dp*vz.*rhog./viscg).^(-0.42)...
                 .*(viscg./(rhog.*Dim(i))).^(-0.67);
 

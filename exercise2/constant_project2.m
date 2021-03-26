@@ -6,11 +6,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
     RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny...
-    MM LENGTH
+    LENGTH
 
 %Initial data
 %-------------------------------------------------------------------
-Tin = 794;               % Initial temperature      [K]
+Tin = 793;               % Initial temperature      [K]
 pin = 29e5;               % Initial pressure         [Pa]
 uin = 1.89;               % Velocity                 [m/s]
 
@@ -204,5 +204,5 @@ sumny(6) = 18.50;         % Coefficient for N2       [-]
 
 %-----------------------------------------------------------------------
 
-MM = 1/(sum(FRACin./MMASS));
+%MM = 1/(sum(FRACin./MMASS));
 

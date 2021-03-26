@@ -13,8 +13,7 @@ wH2O =vars(4*mpart+1:5*mpart);
 wN2 = ones(mpart,1) - wCH4 - wCO -wH2 -wH2O - wCO2;
 T = vars(5*mpart+1:6*mpart);
 
-%Calculation of rhog:
-rhog = (pin*MM)./(GASCONST*T);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%% Parameter calculations %%%%%%%%%%%%%%%%%%%%
 
@@ -22,15 +21,19 @@ rhog = (pin*MM)./(GASCONST*T);
 Ymass =[wCH4 wCO wCO2 wH2 wH2O wN2];
 Ymol = zeros(mpart, 6);
 for i=1:mpart
+    MMs(i) = Ymass(i,:) * MMASS';
     Ymol(i,:) =  convert(Ymass(i,:));
 end
+MMs = MMs';
 
+%Calculation of rhog:
+rhog = (pin*MMs)./(GASCONST*T);
 %Viscocity:
 VIS = viscosity(Ymol,T)';
 
 %Diffusivity
 for i = 1:mpart
-    [Dim(i,:),k(i,:)]=masscoef(pin,T(i),rhog(i),uin,VIS(mpart),Ymass(i,:));
+    [Dim(i,:),k(i,:)]=masscoef(pin,T(i),rhog(i),uin,VIS(mpart),Ymass(i,:),MMs(i));
 end
 
 %Create the Matrix Rcomp and column vector for the enthalpy Note that these
@@ -39,42 +42,59 @@ end
 for i=1:Ncomp % add (boyao)
     Rcomp(:,i) = Rcomp(:,i).*MMASS(i); %convert to mass based
 end
+
 %%%%%%%%%%%%%%%%%%%%%%%%% generate the solver %%%%%%%%%%%%%%%%%%%%
 
 %Create 1st and 2nd derivative vector  +  residue vectors:
-
+%drho/dr                            
+drhogdr =  dss020(r(1),rp,mpart,rhog,-1)';
 %Mass equation:
 
 %%%%%%%% CH4 %%%%%%%%%%%%%%
 dwCH4dr = dss020(r(1),rp,mpart,wCH4,-1)';
 dwCH4dr2 = dss042(r(1),rp,mpart,wCH4,dwCH4dr,2,2)';
-F_CH4 = rhog.*Dim(:,1).*(2.*dwCH4dr+r'.*dwCH4dr2) +...
-    RHOcat.*Rcomp(:,1).*(1-EPS);
+F_CH4 = Dim(:,1) .*(  (2.*rhog + (r').*drhogdr).*dwCH4dr...
+                         +  ((r').*rhog.*dwCH4dr2))...
+                         + RHOcat.*Rcomp(:,1).*(1-EPS);
+% F_CH4 = rhog.*Dim(:,1).*(2.*dwCH4dr+r'.*dwCH4dr2) +...
+%     RHOcat.*Rcomp(:,1).*(1-EPS);
 
 %%%%%%%% CO %%%%%%%%%%%%%%
 dwCOdr = dss020(r(1),rp,mpart,wCO,-1)';
 dwCOdr2 = dss042(r(1),rp,mpart,wCO,dwCOdr,2,2)';
-F_CO = rhog.*Dim(:,2).*(2*dwCOdr+r'.*dwCOdr2) +...
-    RHOcat.*Rcomp(:,2).*(1-EPS);
+F_CO = Dim(:,2) .*(  (2*rhog + (r').*drhogdr).*dwCOdr...
+                         +  ((r').*rhog.*dwCOdr2))...
+                         + RHOcat.*Rcomp(:,2).*(1-EPS);
+
+% F_CO = rhog.*Dim(:,2).*(2*dwCOdr+r'.*dwCOdr2) +...
+%     RHOcat.*Rcomp(:,2).*(1-EPS);
 
 %%%%%%%% CO2 %%%%%%%%%%%%%%
 dwCO2dr = dss020(r(1),rp,mpart,wCO2,-1)';
 dwCO2dr2 = dss042(r(1),rp,mpart,wCO2,dwCO2dr,2,2)';
-F_CO2 = rhog.*Dim(:,3).*(2*dwCO2dr+r'.*dwCO2dr2) +...
-    RHOcat.*Rcomp(:,3).*(1-EPS);
+% F_CO2 = rhog.*Dim(:,3).*(2*dwCO2dr+r'.*dwCO2dr2) +...
+%     RHOcat.*Rcomp(:,3).*(1-EPS);
+F_CO2 = Dim(:,3) .*(  (2*rhog + (r').*drhogdr).*dwCO2dr...
+                         +  ((r').*rhog.*dwCO2dr2))...
+                         + RHOcat.*Rcomp(:,3).*(1-EPS);
 
 %%%%%%%% H2 %%%%%%%%%%%%%%
 dwH2dr = dss020(r(1),rp,mpart,wH2,-1)';
 dwH2dr2 = dss042(r(1),rp,mpart,wH2,dwH2dr,2,2)';
-F_H2 = rhog.*Dim(:,4).*(2*dwH2dr+r'.*dwH2dr2) +...
-    RHOcat.*Rcomp(:,4).*(1-EPS);
+% F_H2 = rhog.*Dim(:,4).*(2*dwH2dr+r'.*dwH2dr2) +...
+%     RHOcat.*Rcomp(:,4).*(1-EPS);
+F_H2 = Dim(:,4) .*(  (2*rhog + (r').*drhogdr).*dwH2dr...
+                         +  ((r').*rhog.*dwH2dr2))...
+                         + RHOcat.*Rcomp(:,4).*(1-EPS);
 
 %%%%%%% H2O %%%%%%%%%%%%%%
 dwH2Odr = dss020(r(1),rp,mpart,wH2O,-1)';
 dwH2Odr2 = dss042(r(1),rp,mpart,wH2O,dwH2Odr,2,2)';
-F_H2O = rhog.*Dim(:,5).*(2.*dwH2Odr+r'.*dwH2Odr2) +...
-    RHOcat.*Rcomp(:,5).*(1-EPS);
-
+% F_H2O = rhog.*Dim(:,5).*(2.*dwH2Odr+r'.*dwH2Odr2) +...
+%     RHOcat.*Rcomp(:,5).*(1-EPS);
+F_H2O = Dim(:,5) .*(  (2*rhog + (r').*drhogdr).*dwH2Odr...
+                         +  ((r').*rhog.*dwH2Odr2))...
+                         + RHOcat.*Rcomp(:,5).*(1-EPS);
 
 %Temperature equation:
 LAMBDA = 50;                                                    

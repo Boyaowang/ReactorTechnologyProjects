@@ -50,7 +50,7 @@ wCO = y(:,n+1:2*n) ;
 wCO2 = y(:,2*n+1:3*n);
 wH2 = y(:,3*n+1:4*n);
 wH2O =y(:,4*n+1:5*n);
-wN2 = ones(size(wCH4)) - wCH4 - wCO -wH2 -wH2O;
+wN2 = ones(size(wCH4)) - wCH4 - wCO -wH2 -wH2O - wCO2;
 T = y(:,5*ndisk+1:6*ndisk);
 %%%%%%%%%%%%%%%%%%%%%%% Ploting the results %%%%%%%%%%%%%%%%%%%%
 
@@ -59,7 +59,7 @@ for i=0:5
 plottingFunc(i,r,z,y,ndisk);
 subplot(3,2,6);
 mesh(r,z,wN2)
-axis([0 RADIUSi 0 LENGTH])
+axis([0 RADIUSi 0 LENGTH 0.05 0.07])
 grid on
 xlabel('Radius [m]')
 ylabel('Z [m]')

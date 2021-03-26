@@ -10,7 +10,7 @@ global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
 
 %Initial data
 %-------------------------------------------------------------------
-Tin = 794;                % Initial temperature      [K]
+Tin = 793;                % Initial temperature      [K]
 pin = 29e6;               % Initial pressure         [Pa]
 uin = 1.89;               % Velocity                 [m/s]
 
@@ -20,8 +20,8 @@ uin = 1.89;               % Velocity                 [m/s]
 GASCONST  = 8.3145E3;     % Gas constant             [J/kmoleK]
 Ncomp     = 6;            % Number of components     [-]
 ZP        = 30;           % Number of axial discretization points
-RP        = 6;            % Number of radial discretization points
-mpart     = 5;            % Number of radial discretization points in the pellet
+RP        = 7;            % Number of radial discretization points
+mpart     = 6;            % Number of radial discretization points in the pellet
 
 % Catalyst data
 %-------------------------------------------------------------------
@@ -62,7 +62,7 @@ MMASS(4) =  2.02;         % Molemass H2
 MMASS(5) = 18.02;         % Molemass H2O
 MMASS(6) = 28.01;         % Molemass N2
 
-MM = 1/(sum(FRACin./MMASS));
+%MM = 1/(sum(FRACin./MMASS));
 
 % Preexponential factors for the rate constants      [kmole/kgcat h]
 %-------------------------------------------------------------------
