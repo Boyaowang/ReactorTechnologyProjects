@@ -6,12 +6,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global GASCONST Ncomp RP RHOcat EPS Dp TEMPout LAMBDAst RADIUSi ...
     RADIUSo MMASS AJ AX ACTEN ENT298 ENT948 ADENT CP LAMBDA B S sumny...
-    LENGTH
+    LENGTH FRACAll
+
 
 %Initial data
 %-------------------------------------------------------------------
 Tin = 793;               % Initial temperature      [K]
-pin = 29e5;               % Initial pressure         [Pa]
+pin = 29e6;               % Initial pressure         [Pa]
 uin = 1.89;               % Velocity                 [m/s]
 
 
@@ -51,7 +52,9 @@ FRACin(4) = 0.0029;       % H2
 FRACin(5) = 0.7218;       % H2O
 FRACin(6) = 0.0641;       % N2
 
-
+FRACAll = [ones(RP,1)*FRACin(1) ones(RP,1)*FRACin(2) ...
+    ones(RP,1)*FRACin(3) ones(RP,1)*FRACin(4) ...
+    ones(RP,1)*FRACin(5)];
 % Molemass of the components                         [kg/kmole]
 %-------------------------------------------------------------------
 

@@ -1,13 +1,13 @@
 function dydz = calc(z,vari,par,r)
 %%%%%%%%%%%%%%%%%%% Import constants:%%%%%%%%%%%%%%%%%%%%%%
-global RP GASCONST RHOcat RADIUSi EPS Ncomp MMASS Dp TEMPout
+global RP GASCONST RHOcat RADIUSi EPS Ncomp MMASS Dp TEMPout FRACAll
 r0 = par(1); % Lower integration limit in r-direction
 eta=par(2); % Efficency factor
 uin = par(3); % initial velocity profile
 
 %%%%%%%%%%%% create variables vector for each z %%%%%%%%%%%%%%
 n = RP; % number of discretization point
-wCH4 =vari(1:n);
+wCH4 =vari(1:n)
 wCO = vari(n+1:2*n) ;
 wCO2 = vari(2*n+1:3*n);
 wH2 = vari(3*n+1:4*n);
@@ -169,7 +169,7 @@ dwH2Odz = 1./(rhog(2:n-1).*uz(2:n-1))...
       +RHOcat*eta*(1-EPS).*Rcomp(2:n-1,5));
 resdwH2Odr1 = dwH2Odr(1);
 resdwH2Odr2 = dwH2Odr(n);
-dwCH4dz + dwCOdz + dwCO2dz + dwH2Odz + dwH2dz
+dwCH4dz + dwCOdz + dwCO2dz + dwH2Odz + dwH2dz;
 %%%%%%%%%%%%%%%%%%%%%%%%Define the equations system:%%%%%%%%%%%%%%%%%%%%%%
 dydz = [resdwCH4dr1;dwCH4dz;resdwCH4dr2;...
     resdwCOdr1;dwCOdz;resdwCOdr2;...
@@ -180,4 +180,9 @@ dydz = [resdwCH4dr1;dwCH4dz;resdwCH4dr2;...
     resduzdz1;duzdz;resduzdz2;...
     dpdz];
 
+% FRACAll = FRACAll+[[resdwCH4dr1;dwCH4dz;resdwCH4dr2] ...
+%     [resdwCOdr1;dwCOdz;resdwCOdr2] ...
+%     [resdwCO2dr1;dwCO2dz;resdwCO2dr2] ...
+%     [resdwH2dr1;dwH2dz;resdwH2dr2] ...
+%     [resdwH2Odr1;dwH2Odz;resdwH2Odr2]]
 end

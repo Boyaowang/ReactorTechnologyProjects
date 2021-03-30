@@ -52,6 +52,7 @@ wH2 = y(:,3*n+1:4*n);
 wH2O =y(:,4*n+1:5*n);
 wN2 = ones(size(wCH4)) - wCH4 - wCO -wH2 -wH2O-wCO2;
 T = y(:,5*ndisk+1:6*ndisk);
+uz = y(:,6*ndisk+1:7*ndisk);
 %%%%%%%%%%%%%%%%%%%%%%% Ploting the results %%%%%%%%%%%%%%%%%%%%
 
 %plot the tempt + mass fraction profiles:
@@ -81,3 +82,11 @@ grid on
 xlabel('Radius [m]')
 ylabel('Z [m]')
 zlabel('Temperature [K]');
+
+% % Plotting the velocity
+figure
+mesh(r,z,uz)
+grid on
+xlabel('Radius [m]')
+ylabel('Z [m]')
+zlabel('uz [m/s]');
