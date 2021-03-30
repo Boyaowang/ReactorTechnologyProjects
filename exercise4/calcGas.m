@@ -7,7 +7,7 @@ uin = par(3); % initial velocity profile
 
 %%%%%%%%%%%% Initialization for reactor %%%%%%%%%%%%%%
 n = RP; % number of discretization point
-wCH4 =vari(1:n);
+wCH4 =vari(1:n)
 wCO = vari(n+1:2*n) ;
 wCO2 = vari(2*n+1:3*n);
 wH2 = vari(3*n+1:4*n);
@@ -31,6 +31,7 @@ wCO2s = yPellet(3*mpart,:);
 wH2s = yPellet(4*mpart,:);
 wH2Os =yPellet(5*mpart,:);
 wN2s = 1 - wCH4s - wCO2s - wCOs -wH2s -wH2Os;
+
 Ts = yPellet(6*mpart,:);
 
 %%%%%%%%%%%%%%%%%%%%%%%% Parameter calculations %%%%%%%%%%%%%%%%%%%%
@@ -115,7 +116,13 @@ drhogdz = (MM(2:n-1)/GASCONST).*( (1./(T(2:n-1))./(dpdz*ones(n-2,1))) ...
 %drho/dr                            
 drhogdr =  dss020(r0,RADIUSi,n,rhog,1)';
 
-duzdz = - 1./rhog(2:n-1).*drhogdz.*uz(2:n-1);
+duzdz = - 1./rhog(2:n-1).*(drhogdz.*uz(2:n-1));
+% ./EPS+...
+%     +k((2:n-1),1) .* av./EPS.*(wCH4(2:n-1)-wCH4s(2:n-1)')...
+%     +k((2:n-1),2) .* av./EPS.*(wCO(2:n-1)-wCOs(2:n-1)')...
+%     +k((2:n-1),3) .* av./EPS.*(wCO2(2:n-1)-wCO2s(2:n-1)')...
+%     +k((2:n-1),4) .* av./EPS.*(wH2(2:n-1)-wH2s(2:n-1)')...
+%     +k((2:n-1),5) .* av./EPS.*(wH2O(2:n-1)-wH2Os(2:n-1)'));
 % duzdz = -uz(2:n-1)./ptot ...
 %     .* (dpdz*ones(n-2,1) - ptot./T(2:n-1) .* dTdz);
 %BCs
@@ -195,7 +202,7 @@ dwH2Odz = 1./(rhog(2:n-1).*uz(2:n-1))...
 
 resdwH2Odr1 = dwH2Odr(1);
 resdwH2Odr2 = dwH2Odr(n);
-dwCH4dz + dwCOdz + dwCO2dz + dwH2Odz + dwH2dz
+(dwCH4dz + dwCOdz + dwCO2dz + dwH2Odz + dwH2dz);
 %%%%%%%%%%%%%%%%%%%%%%%%Define the equations system:%%%%%%%%%%%%%%%%%%%%%%
 dydz = [resdwCH4dr1;dwCH4dz;resdwCH4dr2;...
     resdwCOdr1;dwCOdz;resdwCOdr2;...

@@ -26,7 +26,7 @@ mpart     = 6;            % Number of radial discretization points in the pellet
 % Catalyst data
 %-------------------------------------------------------------------
 RHOcat = 2355.2;          % Density catalyst         [kgcat/m^3]
-EPS    = 0.528;           % Pore fraction            [-]
+EPS    = 0.528;%0.528;           % Pore fraction            [-]
 Dp     = 0.0173;          % Particle diameter        [m]
 rp     = Dp/2;            % Particle radius          [m]
 hp     = 30000;           % Heat transfer coefficient[W/m^2K]

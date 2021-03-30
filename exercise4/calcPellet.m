@@ -57,7 +57,7 @@ dwCH4dr = dss020(r(1),rp,mpart,wCH4,-1)';
 dwCH4dr2 = dss042(r(1),rp,mpart,wCH4,dwCH4dr,2,2)';
 F_CH4 = Dim(:,1) .*(  (2.*rhog + (r').*drhogdr).*dwCH4dr...
                          +  ((r').*rhog.*dwCH4dr2))...
-                         + RHOcat.*Rcomp(:,1).*(1-EPS);
+                         + RHOcat.*Rcomp(:,1).*(1-EPS);%.*(1-EPS);
 % F_CH4 = rhog.*Dim(:,1).*(2.*dwCH4dr+r'.*dwCH4dr2) +...
 %     RHOcat.*Rcomp(:,1).*(1-EPS);
 
@@ -66,7 +66,7 @@ dwCOdr = dss020(r(1),rp,mpart,wCO,-1)';
 dwCOdr2 = dss042(r(1),rp,mpart,wCO,dwCOdr,2,2)';
 F_CO = Dim(:,2) .*(  (2*rhog + (r').*drhogdr).*dwCOdr...
                          +  ((r').*rhog.*dwCOdr2))...
-                         + RHOcat.*Rcomp(:,2).*(1-EPS);
+                         + RHOcat.*Rcomp(:,2).*(1-EPS);%.*(1-EPS);
 
 % F_CO = rhog.*Dim(:,2).*(2*dwCOdr+r'.*dwCOdr2) +...
 %     RHOcat.*Rcomp(:,2).*(1-EPS);
@@ -78,7 +78,7 @@ dwCO2dr2 = dss042(r(1),rp,mpart,wCO2,dwCO2dr,2,2)';
 %     RHOcat.*Rcomp(:,3).*(1-EPS);
 F_CO2 = Dim(:,3) .*(  (2*rhog + (r').*drhogdr).*dwCO2dr...
                          +  ((r').*rhog.*dwCO2dr2))...
-                         + RHOcat.*Rcomp(:,3).*(1-EPS);
+                         + RHOcat.*Rcomp(:,3).*(1-EPS);%.*(1-EPS);
 
 %%%%%%%% H2 %%%%%%%%%%%%%%
 dwH2dr = dss020(r(1),rp,mpart,wH2,-1)';
@@ -87,7 +87,7 @@ dwH2dr2 = dss042(r(1),rp,mpart,wH2,dwH2dr,2,2)';
 %     RHOcat.*Rcomp(:,4).*(1-EPS);
 F_H2 = Dim(:,4) .*(  (2*rhog + (r').*drhogdr).*dwH2dr...
                          +  ((r').*rhog.*dwH2dr2))...
-                         + RHOcat.*Rcomp(:,4).*(1-EPS);
+                         + RHOcat.*Rcomp(:,4).*(1-EPS);%.*(1-EPS);
 
 %%%%%%% H2O %%%%%%%%%%%%%%
 dwH2Odr = dss020(r(1),rp,mpart,wH2O,-1)';
@@ -96,7 +96,7 @@ dwH2Odr2 = dss042(r(1),rp,mpart,wH2O,dwH2Odr,2,2)';
 %     RHOcat.*Rcomp(:,5).*(1-EPS);
 F_H2O = Dim(:,5) .*(  (2*rhog + (r').*drhogdr).*dwH2Odr...
                          +  ((r').*rhog.*dwH2Odr2))...
-                         + RHOcat.*Rcomp(:,5).*(1-EPS);
+                         + RHOcat.*Rcomp(:,5).*(1-EPS);%.*(1-EPS);
 %Temperature equation:
 LAMBDA = 50;                                                    
 % d1dr_T = dss020(r(1),rp,mpart,T,1)';
@@ -145,6 +145,5 @@ F_H2(mpart) = dwH2dr(mpart) +...
 F_H2O(mpart) = dwH2Odr(mpart) +...
     (k_H2O/Dim(mpart,5))*(wH2O(mpart) - wbulk_H2O);
 F_T(mpart) = dTdr(mpart) + h/LAMBDA_b*(T(mpart) - Tbulk);
-
 dydr = [F_CH4;F_CO;F_CO2;F_H2;F_H2O;F_T];
 end
