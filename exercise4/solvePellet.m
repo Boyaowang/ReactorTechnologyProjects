@@ -21,11 +21,13 @@ T0 = T_guess*ones(mpart,1);
 %initial guess vectors:
 init = [wCH40; wCO0; wCO20; wH20; wH2O0; T0];
 %parameters vectors:
-par = [ptot_guess; uz_guess; T_guess; wCH40(1); wCO0(1); wCO20(1); wH20(1); wH2O0(1)];
+par = [ptot_guess; uz_guess; T_guess; wCH40(1); wCO0(1);...
+    wCO20(1); wH20(1); wH2O0(1)];
 %%%%%%%%%%%%%%%%%%%%% non-linear system solver %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Create ODE solver:
-options = optimoptions('fsolve','Display','none','PlotFcn',@optimplotfirstorderopt);
+options = optimoptions('fsolve','Display','none','PlotFcn',...
+    @optimplotfirstorderopt);
 
 func = @calcPellet;
 yPellet = fsolve(@(init)calcPellet(init,par), init);

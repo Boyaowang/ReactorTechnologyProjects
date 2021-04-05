@@ -36,7 +36,8 @@ VIS = viscosity(Ymol,T,mpart)';
 
 %Diffusivity
 for i = 1:mpart
-    [Dim(i,:),k(i,:)]=masscoef(ptots,T(i),rhog(i),uzs,VIS(mpart),Ymass(i,:),MMs(i));
+    [Dim(i,:),k(i,:)]=masscoef(ptots,T(i),rhog(i),uzs,VIS(mpart),...
+        Ymass(i,:),MMs(i));
 end
 
 %Create the Matrix Rcomp and column vector for the enthalpy Note that these

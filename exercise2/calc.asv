@@ -74,18 +74,6 @@ duzdr =dss020(r0,RADIUSi,n,uz,-1)';
 %%%%%%%%%%%%%%%%%%%%%%% %Pressure drop: %%%%%%%%%%%%%%%%%%%%%%%%%%
 dpdz = ergun(rhog, uz, Re, r);
 
-%%%%%%%%%%%%%%%%%%%%%%% %Temperature equation: %%%%%%%%%%%%%%%%%%%%%%%
-dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1))).*...
-       (LAMBDAer(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
-       +DELTAHr(2:n-1).*eta./EPS);
-% dTdz = -drhogdz .*(T(2:n-1)./rhog(2:n-1))-T(2:n-1)./uz(2:n-1).*duzdz + ...
-%     1./(EPS.*Cpg(2:n-1).*rhog(2:n-1).*uz(2:n-1)).*LAMBDAer(2:n-1) .*...
-%     (dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))+...
-%     DELTAHr(2:n-1).*eta./(EPS.*Cp(2:n-1).*rhog(2:n-1).*uz(2:n-1));
-%BCs:
-resdTdz1 = dTdr(1);
-resdTdz2 = dTdr(n)+Ur/LAMBDAer(RP)*(T(RP)-TEMPout); %% todo
-
 
 %% drho/dz
 drhogdz = (MM(2:n-1)/GASCONST).*( (1./(T(2:n-1))./(dpdz*ones(n-2,1))) ...
@@ -102,6 +90,17 @@ duzdz = - 1./rhog(2:n-1).*drhogdz.*uz(2:n-1);
 %BCs
 resduzdz1 =duzdr(1);
 resduzdz2 =duzdr(n);
+
+%%%%%%%%%%%%%%%%%%%%%%% %Temperature equation: %%%%%%%%%%%%%%%%%%%%%%%
+dTdz = (1./(rhog(2:n-1) .* uz(2:n-1) .* Cpg(2:n-1))).*...
+       (LAMBDAer(2:n-1) .*(dTdr2(2:n-1) + 1./r(2:n-1) .* dTdr(2:n-1))...
+       +DELTAHr(2:n-1).*eta);
+dTdz = -drhogdz .*(T(2:n-1)./rhog(2:n-1))-T(2:n-1)./uz(2:n-1).*duzdz + ...
+    1./(EPS.*Cpg(2:n-1).*rhog(2:n-1).*uz(2:n-1)).*
+%BCs:
+resdTdz1 = dTdr(1);
+resdTdz2 = dTdr(n)+Ur/LAMBDAer(RP)*(T(RP)-TEMPout); %% todo
+
 
 %%%%%%%%%%%%%%%%%%%%%%% %CH4 - mass fraction:%%%%%%%%%%%%%%%%%%%%%%%
 % dwCH4dz = 1./uz(2:n-1) ...

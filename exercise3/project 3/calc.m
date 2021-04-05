@@ -104,7 +104,7 @@ LAMBDA = 50;
 % F_T = dTdr2 + RHOcat.*DELTAHr;
 dTdr = dss020(r(1),rp,mpart,T,-1)';
 dTdr2 = dss042(r(1),rp,mpart,T,dTdr,2,2)';
-F_T = LAMBDA.*(2*dTdr + r'.*dTdr2) - r'.*DELTAHr;
+F_T = LAMBDA.*(2*dTdr + r'.*dTdr2) - r'.*DELTAHr.*(1-EPS);
 
 
 % boundaries particle center 
